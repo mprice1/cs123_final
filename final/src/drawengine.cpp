@@ -414,8 +414,8 @@ void DrawEngine::mouse_drag_event(float2 p0,float2 p1) {
   @param dx: The delta value of the mouse wheel movement.
 **/
 void DrawEngine::mouse_wheel_event(int dx) {
-    /*if((camera_.center - camera_.eye).getMagnitude() > .5 || dx < 0)
-        camera_.eye += (camera_.center - camera_.eye).getNormalized() * dx * .005;*/
+    if((camera_.center - camera_.eye).getMagnitude() > .5 || dx < 0)
+        camera_.eye += (camera_.center - camera_.eye).getNormalized() * dx * .005;
 }
 
 /**
@@ -445,20 +445,28 @@ GLuint DrawEngine::load_cube_map(QList<QFile *> files) {
     return id;
 }
 
+
 /**
   Loads a texture into video memory.
 
   Param: a Qfile, texture
 **/
+
 GLuint DrawEngine::load_texture(QFile * tex)
 {
- GLuint id;
- glGenTextures(1,&id);
- glBindTexture(GL_TEXTURE_2D,id);
+
  QImage image,texture;
+ GLuint id;
+
  image.load(tex->fileName());
  image = image.mirrored(false,true);
  texture = QGLWidget::convertToGLFormat(image);
+
+
+ glGenTextures(1,&id);
+
+ glBindTexture(GL_TEXTURE_2D,id);
+
 
 
  gluBuild2DMipmaps(GL_TEXTURE_2D, 3, texture.width(), texture.height(), GL_RGBA, GL_UNSIGNED_BYTE, texture.bits());
