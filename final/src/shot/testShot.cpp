@@ -49,6 +49,7 @@ void testShot::update()
 //draw!
 void testShot::draw()
 {
+   // glEnable(GL_FOG);
 
     glMatrixMode(GL_MODELVIEW);
     glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
