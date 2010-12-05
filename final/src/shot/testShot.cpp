@@ -162,29 +162,29 @@ void testShot::drawUnitRope(int tess)
  **/
 void testShot::ropeLine(Vector4 pt1, Vector4 pt2)
 {
-float stringRadius = .05;
-Vector4 line = pt2-pt1;
-float distance = (line).getMagnitude();
-int tess = (int)(2*distance);
-//get distance to use as scale factor, tessalation parameter
-//calculate tessellation
+    float stringRadius = .05;
+    Vector4 line = pt2-pt1;
+    float distance = (line).getMagnitude();
+    int tess = (int)(2*distance);
+    //get distance to use as scale factor, tessalation parameter
+    //calculate tessellation
 
-//cross product of normalized is vector to rotate around
+    //cross product of normalized is vector to rotate around
     //point to rotate around is origin
-Vector4 rotVec = Vector4(0,1.0,0,0).cross(line.getNormalized());
+    Vector4 rotVec = Vector4(0,1.0,0,0).cross(line.getNormalized());
 
-//angle is acos( v1 dot v2)
-float angle = acos(Vector4(0,1,0,0).dot(line.getNormalized()));
-angle *= 180;
-angle /= M_PI;
+    //angle is acos( v1 dot v2)
+    float angle = acos(Vector4(0,1,0,0).dot(line.getNormalized()));
+    angle *= 180;
+    angle /= M_PI;
 
-//translation is pt1
+    //translation is pt1
 
-//now we have the matrix to transform STRING SPACE into WORLD/OBJECT space
-glMatrixMode(GL_MODELVIEW);
-glPushMatrix();
+    //now we have the matrix to transform STRING SPACE into WORLD/OBJECT space
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
 
-/**
+    /**
 cout<<"start:"<<pt1<<" end: "<<pt2<<endl;
 cout<<"angle: "<<angle<<" rotvec: "<<rotVec<<endl;
 cout<<"line: "<<line<<endl;
@@ -193,12 +193,12 @@ cout<<"tess: "<<tess<<endl;
 **/
 
 
-glTranslatef(pt1.x,pt1.y,pt1.z);
-glRotatef(angle,rotVec.x,rotVec.y,rotVec.z);
-glScalef(stringRadius, distance, stringRadius);
+    glTranslatef(pt1.x,pt1.y,pt1.z);
+    glRotatef(angle,rotVec.x,rotVec.y,rotVec.z);
+    glScalef(stringRadius, distance, stringRadius);
 
-drawUnitRope(tess);
+    drawUnitRope(tess);
 
-glPopMatrix();
+    glPopMatrix();
 
 }
