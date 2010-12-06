@@ -25,6 +25,8 @@ public:
 
     static QList<Shapes>* makeShapes(int numshapes, double radius);
     static QList<Shapes>* makeRectShapes(int numx, int numy, double xmin, double xmax, double ymin, double ymax);
+    static QList<Shapes>* makeRectShapesNonRand(int numx, int numy, double xmin, double xmax, double ymin, double ymax);
+
 
 private:
     GLUquadric     * m_quadric;

@@ -45,15 +45,21 @@ void PolarShapes::begin(){
     m_shapes->clear();
     QList<Shapes>* temp = NULL;
 
-    temp = PolarShapes::makeShapes(100,40);
+    //    temp = PolarShapes::makeShapes(100,40);
+    //    m_shapes->append(*temp);
+    //    temp->clear();
+    //    delete temp;
+
+    //temp = PolarShapes::makeRectShapesNonRand(80,80,-160,160,-160,160);
+    temp = PolarShapes::makeRectShapesNonRand(20,100,-20,20,-100,100);
     m_shapes->append(*temp);
     temp->clear();
     delete temp;
 
-    temp = PolarShapes::makeRectShapes(5,5,-50,50,-50,50);
-    m_shapes->append(*temp);
-    temp->clear();
-    delete temp;
+    //    temp = PolarShapes::makeRectShapes(5,5,-50,50,-50,50);
+    //    m_shapes->append(*temp);
+    //    temp->clear();
+    //    delete temp;
 
 }
 
@@ -78,9 +84,9 @@ void PolarShapes::draw(){
 
 
     glPushMatrix();
-    glTranslated(0,0,10);
+    glTranslated(0,0,2);
 //    gluDisk(m_quadric,0,100,4,4);
-    gluDisk(m_quadric,0,100,4,4);
+    gluDisk(m_quadric,0,400,30,30);
     glPopMatrix();
 
     glActiveTexture(GL_TEXTURE0);
@@ -92,10 +98,12 @@ void PolarShapes::draw(){
         Shapes s = m_shapes->at(i);
 
         glPushMatrix();
-        glRotated(s.r.angle, s.r.x,s.r.y,s.r.z);
+        //glRotated(s.r.angle, s.r.x,s.r.y,s.r.z);
         //glTranslated(s.t.x,s.t.y,5 * sin(m_framecount / 20 + s.polt));
-        glTranslated(s.t.x,s.t.y,5 * sin(m_framecount / 20 + s.polr / 15));
+        //glTranslated(s.t.x,s.t.y,(40 - s.polr) * sin(m_framecount / 20 - s.polr / 15) / (m_framecount / 20 - s.polr / 15));
         //gluCylinder(m_quadric,.25,0,10,10,10);
+
+        glTranslated(s.t.x,s.t.y,2 * sin(m_framecount / 20 - (double) s.rectx / 10 - (double) s.recty / 7));
 
         glRotated(-90,1,0,0);
         glScaled(5,5,5);
@@ -142,6 +150,7 @@ QList<Shapes>* PolarShapes::makeShapes(int numshapes, double radius){
         double rloc = r1 * radius;
         double tloc = r2 * 2 * M_PI;
 
+
         Shapes s;
         s.rectx = i;
         s.polr = rloc;
@@ -162,6 +171,30 @@ QList<Shapes>* PolarShapes::makeShapes(int numshapes, double radius){
     return toReturn;
 }
 
+QList<Shapes>* PolarShapes::makeRectShapesNonRand(int numx, int numy, double xmin, double xmax, double ymin, double ymax){
+    QList<Shapes>* toReturn = new QList<Shapes>();
+
+
+    for (int x = 0; x < numx; x++){
+        for (int y = 0; y < numy; y++){
+            double xloc = x;
+            xloc = xloc / (double) numx;
+            double yloc = y;
+            yloc = yloc / (double) numy;
+
+            Shapes s;
+            s.rectx = x;
+            s.recty = y;
+
+            s.t.x = xmin * (1 - xloc) + xloc * xmax;
+            s.t.y = ymin * (1 - yloc) + yloc * ymax;
+
+            toReturn->append(s);
+        }
+    }
+
+    return toReturn;
+}
 
 QList<Shapes>* PolarShapes::makeRectShapes(int numx, int numy, double xmin, double xmax, double ymin, double ymax){
     QList<Shapes>* toReturn = new QList<Shapes>();
