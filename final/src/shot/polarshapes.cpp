@@ -1,4 +1,5 @@
 #include "polarshapes.h"
+#include "drawengine.h"
 
 PolarShapes::PolarShapes(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL)
 {
@@ -20,7 +21,9 @@ PolarShapes::~PolarShapes(){
     }
     gluDeleteQuadric(m_quadric);
 }
-
+extern "C"{
+    extern void APIENTRY glActiveTexture(GLenum);
+}
 
 void PolarShapes::begin(){
     srand(time(NULL));
@@ -42,15 +45,15 @@ void PolarShapes::begin(){
     m_shapes->clear();
     QList<Shapes>* temp = NULL;
 
-    temp = PolarShapes::makeShapes(400,40);
+    temp = PolarShapes::makeShapes(100,40);
     m_shapes->append(*temp);
     temp->clear();
     delete temp;
 
-//    temp = PolarShapes::makeRectShapes(20,20,-50,50,-50,50);
-//    m_shapes->append(*temp);
-//    temp->clear();
-//    delete temp;
+    temp = PolarShapes::makeRectShapes(5,5,-50,50,-50,50);
+    m_shapes->append(*temp);
+    temp->clear();
+    delete temp;
 
 }
 
@@ -80,6 +83,10 @@ void PolarShapes::draw(){
     gluDisk(m_quadric,0,100,4,4);
     glPopMatrix();
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textures_->value("cube_map_1"));
+    shader_programs_->value("reflect")->bind();
+    shader_programs_->value("reflect")->setUniformValue("CubeMap",GL_TEXTURE0);
 
     for(int i = 0; i < m_shapes->length(); i++){
         Shapes s = m_shapes->at(i);
@@ -88,10 +95,15 @@ void PolarShapes::draw(){
         glRotated(s.r.angle, s.r.x,s.r.y,s.r.z);
         //glTranslated(s.t.x,s.t.y,5 * sin(m_framecount / 20 + s.polt));
         glTranslated(s.t.x,s.t.y,5 * sin(m_framecount / 20 + s.polr / 15));
-        gluCylinder(m_quadric,.25,0,10,10,10);
+        //gluCylinder(m_quadric,.25,0,10,10,10);
+
+        glRotated(-90,1,0,0);
+        glScaled(5,5,5);
+        glCallList(models_->value(BRAD_MODEL).idx);
         glPopMatrix();
     }
 
+    shader_programs_->value(NAIL_SHADER)->release();
 
     glPopMatrix();
 }
