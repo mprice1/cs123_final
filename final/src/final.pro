@@ -22,7 +22,10 @@ SOURCES += main.cpp\
     shot/shot.cpp \
     targa.cpp \
     shot/testShot.cpp \
-    shot/orbshot.cpp
+    shot/orbshot.cpp \
+    Structs.cpp \
+    shot/pshapes.cpp \
+    shot/polarshapes.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -37,7 +40,9 @@ HEADERS  += mainwindow.h \
     shot/shot.h \
     targa.h \
     shot/testShot.h \
-    shot/orbshot.h
+    shot/orbshot.h \
+    shot/pshapes.h \
+    shot/polarshapes.h
 
 FORMS    += mainwindow.ui
 INCLUDEPATH += lib math shot

@@ -18,7 +18,7 @@ void main()
 
 	vec3 N = normalize((tan * mappednorm.x) + (bitan * mappednorm.y) + (normal*mappednorm.z));
 	
-	float lightIntensity = dot(lightoff,N);
+	float lightIntensity = dot(N,lightoff);
 	gl_FragColor.rgb = (lightIntensity * vec3(1.0,1.0,0.8)).rgb;
 		
 }

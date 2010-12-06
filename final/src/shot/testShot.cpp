@@ -20,7 +20,7 @@ void testShot::begin()
 {
 
 glShadeModel(GL_SMOOTH);
-glClearColor(0.8f,0.8f,0.8f,0.0f);
+glClearColor(0.2f,0.2f,0.2f,0.0f);
     glEnable(GL_LIGHTING);
 
     //Make some lights!

@@ -18,12 +18,12 @@ Vector4* pts;
 Vector4* norms;
 vec2<REAL>* texs;
 
-~rope()
+/*~rope()
 {
     delete[] texs;
     delete[] pts;
     delete[] norms;
-}
+}*/
 };
 
 class Shot
