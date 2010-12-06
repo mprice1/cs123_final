@@ -3,7 +3,7 @@
 using std::cout;
 using std::endl;
 
-testShot::testShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex) : Shot(parent,shad,tex)
+testShot::testShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
 {
     //lasts 150 frames
     m_lifespan = 150;
@@ -20,15 +20,15 @@ void testShot::begin()
 {
 
 glShadeModel(GL_SMOOTH);
-glClearColor(0.2f,0.2f,0.2f,0.0f);
+glClearColor(0.8f,0.8f,0.8f,0.0f);
     glEnable(GL_LIGHTING);
 
     //Make some lights!
 glEnable(GL_LIGHT0);
 float lightpos[4];
 lightpos[0]=0.f;
-lightpos[1]=0.f;
-lightpos[2]=2.f;
+lightpos[1]=2.f;
+lightpos[2]=1.f;
 lightpos[3]=0.f;
 
 glLightfv(GL_LIGHT0,GL_POSITION,lightpos);
@@ -52,31 +52,41 @@ extern "C"{
 }
 void testShot::draw()
 {
-   // glEnable(GL_FOG);
+  /*
+    GLuint filter;						// Which Filter To Use
+    GLuint fogMode[]= { GL_EXP, GL_EXP2, GL_LINEAR };	// Storage For Three Types Of Fog
+    GLuint fogfilter= 0;					// Which Fog To Use
+    GLfloat fogColor[4]= {1.0f, 0.5f, 0.5f, 1.0f};		// Fog Color
 
-    glMatrixMode(GL_MODELVIEW);
+    glFogi(GL_FOG_MODE, fogMode[fogfilter]);		// Fog Mode
+    glFogfv(GL_FOG_COLOR, fogColor);			// Set Fog Color
+    glFogf(GL_FOG_DENSITY, 0.35f);				// How Dense Will The Fog Be
+    glHint(GL_FOG_HINT, GL_DONT_CARE);			// Fog Hint Value
+    glFogf(GL_FOG_START, 1.0f);				// Fog Start Depth
+    glFogf(GL_FOG_END, 5.0f);				// Fog End Depth
+    glEnable(GL_FOG);					// Enables GL_FOG
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_NORM));
-
-   /* cout<<"t0: "<<GL_TEXTURE0<<endl;
-    cout<<"occ id: "<<textures_->value(ROPE_OCC)<<endl;
-    cout<<"occ off: "<<(textures_->value(ROPE_OCC) + GL_TEXTURE0)<<endl;
-
-    cout<<"norm id: "<<textures_->value(ROPE_NORM)<<endl;*/
-
-
-
-    shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",3);
-
-    shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",3);
-    shader_programs_->value(ROPE_SHADER)->bind();
+    */
 
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+
+    glMatrixMode(GL_MODELVIEW);
+
+   shader_programs_->value(ROPE_SHADER)->bind();
+    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
+    glActiveTexture(GL_TEXTURE0);
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",GL_TEXTURE0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_NORM));
+
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",GL_TEXTURE1);
+
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
+
+
+
     /*
      WHAT THE FUCK
 
@@ -85,51 +95,86 @@ void testShot::draw()
 
 
 
-    glPushMatrix();
-    glTranslatef(0,3.0 + ((float)(m_framesElapsed%100))/100.0,-5.0);
-    glRotatef(((float)(m_framesElapsed)),0,1.0,0);
-    /*for(int i=0; i<2000; i++)
-    {
-    glTranslatef(0,-1.0,0);
-    drawUnitRope();
-    }*/
-    glPopMatrix();
+
 
    // drawUnitRope();
-    Vector4 start = Vector4(0,0.5,0,1);
-    Vector4 end = Vector4(1,1,0,1);
-    Vector4 end2 = Vector4(1,-1,0,1);
+    Vector4 start = Vector4(0,0,0,1);
 
-    ropeLine(start,end2);
-   /* for(int i=0;i<5;i++)
-    {
-        for(int j=0;j<5;j++)
-        {
-            end = Vector4((double)i,(double)j,-4.0,1);
-            ropeLine(start,end);
-        }
-    }*/
-
+    Vector4 end = Vector4(0,0,2,1);
     rope myrope = makeRopeLine(start,end);
-    glBegin(GL_QUAD_STRIP);
-    for(int i=0; i<myrope.numVerts;i++)
+    drawRope(myrope);
+
+
+    end = Vector4(-2,0,0,1);
+    rope myrope2 = makeRopeLine(start,end);
+    drawRope(myrope2);
+
+    end = Vector4(2,0,0,1);
+    rope myrope3 = makeRopeLine(start,end);
+    drawRope(myrope3);
+
+
+ shader_programs_->value(ROPE_SHADER)->release();
+
+ glActiveTexture(GL_TEXTURE0);
+ glBindTexture(GL_TEXTURE_CUBE_MAP, textures_->value("cube_map_1"));
+ shader_programs_->value("reflect")->bind();
+ shader_programs_->value("reflect")->setUniformValue("CubeMap",GL_TEXTURE0);
+
+for(int i=0; i<5; i++)
+ {
+    for(int j=0;j<5;j++)
     {
-        glTexCoord2f(myrope.texs[i].x, myrope.texs[i].y);
-        glNormal3f(myrope.norms[i].x,myrope.norms[i].y,myrope.norms[i].z);
-        glVertex4f(myrope.pts[i].x,myrope.pts[i].y,myrope.pts[i].z,myrope.pts[i].w);
+
+        glPushMatrix();
+            glTranslatef((float)i,0,(float)j);
+            glScalef(.5,.5,.5);
+            if((i+j)%3==2)
+            {
+                glCallList(models_->value(NAIL_MODEL).idx);
+            }
+            else
+            {
+                glCallList(models_->value(BRAD_MODEL).idx);
+            }
+        glPopMatrix();
     }
-    glEnd();
+ }
 
-    /*start = Vector4(0,0,2,1);
-    ropeLine(start,end);
+//make a ball of nails!
+glPushMatrix();
+glTranslatef(0,1.5,0);
 
-    start = Vector4(0,-2,2,1);
-    ropeLine(start,end);*/
-
-
-
-    shader_programs_->value(ROPE_SHADER)->release();
+for(int i=0; i<8; i++)
+{
+    glPushMatrix();
+    glRotatef(i*45,0,1.0,0);
+    for(int j=0; j<4; j++)
+    {
+        glPushMatrix();
+        glRotatef(45*j,0,0,1);
+        glTranslatef(0,1.0,0);
+        if((i+j)%3==2)
+        {
+            glCallList(models_->value(NAIL_MODEL).idx);
+        }
+        else
+        {
+            glCallList(models_->value(BRAD_MODEL).idx);
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
 }
+
+glPopMatrix();
+
+shader_programs_->value("reflect")->release();
+
+
+}
+
+
 
 /*
  * Draws a rectangular prism with rounded normals and texture coordinates.
@@ -230,102 +275,3 @@ cout<<"tess: "<<tess<<endl;
 
 }
 
-
-rope testShot::makeRopeLine(Vector4 pt1, Vector4 pt2)
-{
-    //Same math as ropeLine()
-    float stringRadius = .05;
-    Vector4 line = pt2-pt1;
-    float distance = (line).getMagnitude();
-    int tess = (int)(2*distance);
-    Vector4 rotVec = Vector4(0,1.0,0,0).cross(line.getNormalized());
-    float angle = acos(Vector4(0,1,0,0).dot(line.getNormalized()));
-    angle *= 180;
-    angle /= M_PI;
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(pt1.x,pt1.y,pt1.z);
-    glRotatef(angle,rotVec.x,rotVec.y,rotVec.z);
-    glScalef(stringRadius, distance, stringRadius);
-    //*********************************************
-    //  STORE THE MATRIX
-    Matrix4x4 modelview;
-    Matrix4x4 normalmat;
-    glGetDoublev(GL_MODELVIEW_MATRIX,modelview.data);
-    glGetDoublev(GL_MODELVIEW_MATRIX,normalmat.data);
-    normalmat.invert();
-    normalmat = Matrix4x4::transpose(normalmat);
-    normalmat.d = normalmat.h = normalmat.l = normalmat.m = normalmat.n = normalmat.o = normalmat.p = 0;
-    //*********************************************
-    glPopMatrix();
-    //*********************************************
-    //  TESSELATE THE ROPE
-    rope* t = new rope();
-    rope newRope = *t;
-    newRope.numVerts = tess * 10;
-    newRope.start = pt1;
-    newRope.end = pt2;
-    newRope.pts = new Vector4[newRope.numVerts];
-    newRope.norms = new Vector4[newRope.numVerts];
-    newRope.texs = new vec2<REAL>[newRope.numVerts];
-
-    int index=0;
-
-    float h = 1.0/((float)tess);
-    float m = 0.707106781;
-
-    for(int i=0; i<tess;i++)
-    {
-    newRope.texs[index] = vec2<REAL>(0.0,1.0);
-    newRope.norms[index] = Vector4(-m,0.0,m,0.0);
-    newRope.pts[index] = Vector4(-0.5,(i+1)*h,0.5,1.0);
-
-    newRope.texs[index+1] = vec2<REAL>(0.0,0.0);
-    newRope.norms[index+1] = Vector4(-m,0.0,m,0.0);
-    newRope.pts[index+1] = Vector4(-0.5,i*h,0.5,1.0);
-
-    newRope.texs[index+2] = vec2<REAL>(0.25,1.0);
-    newRope.norms[index+2] = Vector4(m,0.0,m,0.0);
-    newRope.pts[index+2] = Vector4(0.5,(i+1)*h,0.5,1.0);
-
-    newRope.texs[index+3] = vec2<REAL>(0.25,0.0);
-    newRope.norms[index+3] = Vector4(m,0.0,m,0.0);
-    newRope.pts[index+3] = Vector4(0.5,i*h,0.5,1.0);
-
-    newRope.texs[index+4] = vec2<REAL>(0.5,1.0);
-    newRope.norms[index+4] = Vector4(m,0.0,-m,0.0);
-    newRope.pts[index+4] = Vector4(0.5,(i+1)*h,-0.5,1.0);
-
-    newRope.texs[index+5] = vec2<REAL>(0.5,0.0);
-    newRope.norms[index+5] = Vector4(m,0.0,-m,0.0);
-    newRope.pts[index+5] = Vector4(0.5,i*h,-0.5,1.0);
-
-    newRope.texs[index+6] = vec2<REAL>(0.75,1.0);
-    newRope.norms[index+6] = Vector4(-m,0.0,-m,0.0);
-    newRope.pts[index+6] = Vector4(-0.5,(i+1)*h,-0.5,1.0);
-
-    newRope.texs[index+7] = vec2<REAL>(0.75,0.0);
-    newRope.norms[index+7] = Vector4(-m,0.0,-m,0);
-    newRope.pts[index+7] = Vector4(-0.5,i*h,-0.5, 1.0);
-
-    newRope.texs[index+8] = vec2<REAL>(1.0,1.0);
-    newRope.norms[index+8] = Vector4(-m,0.0,m,0);
-    newRope.pts[index+8] = Vector4(-0.5,(i+1)*h,0.5,1.0);
-
-    newRope.texs[index+9] = vec2<REAL>(1.0,0.0);
-    newRope.norms[index+9] = Vector4(-m, 0.0, m, 0);
-    newRope.pts[index+9] = Vector4(-0.5, i*h, 0.5, 1.0);
-
-    index += 10;
-    }
-
-    //*********************************************
-    //  TRANSFORM THE VERTICES AND NORMALS
-    for(int i=0; i<newRope.numVerts; i++)
-    {
-     newRope.pts[i] =   newRope.pts[i] * modelview ;
-     newRope.norms[i] = newRope.norms[i] * normalmat;
-    }
-return newRope;
-    //*********************************************
-}

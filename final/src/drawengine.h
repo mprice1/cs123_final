@@ -16,6 +16,9 @@
 #define ROPE_OCC "rope_occlusion"
 #define ROPE_NORM "rope_normal"
 
+#define NAIL_MODEL "nailgeom"
+#define BRAD_MODEL "bradgeom"
+
 
 class QGLContext;
 class QGLShaderProgram;

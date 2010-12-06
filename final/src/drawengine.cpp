@@ -83,9 +83,9 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context
     m_shots = new QList<Shot*>();
     m_curShot =0;
 
-    m_shots->append(  new testShot(this, &shader_programs_, &textures_));
-    m_shots->append(  new testShot(this, &shader_programs_, &textures_));
-    m_shots->append(  new testShot(this, &shader_programs_, &textures_));
+    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
 
 
     m_shots->at(m_curShot)->begin();
@@ -119,10 +119,21 @@ DrawEngine::~DrawEngine() {
 **/
 void DrawEngine::load_models() {
     cout << "\033[1mLoading models...\033[0m" << endl;
-    models_["dragon"].model = glmReadOBJ("models/xyzrgb_dragon.obj");
+
+    /*models_["dragon"].model = glmReadOBJ("models/xyzrgb_dragon.obj");
     glmUnitize(models_["dragon"].model);
     models_["dragon"].idx = glmList(models_["dragon"].model,GLM_SMOOTH);
-    cout << "\t \033[32m/course/cs123/data/mesh/xyzrgb_dragon_old.obj\033[0m" << endl;
+    cout << "\t \033[32m/course/cs123/data/mesh/xyzrgb_dragon_old.obj\033[0m" << endl;*/
+
+    models_[NAIL_MODEL].model = glmReadOBJ("models/nail.obj");
+    glmUnitize(models_[NAIL_MODEL].model);
+    models_[NAIL_MODEL].idx = glmList(models_[NAIL_MODEL].model,GLM_SMOOTH);
+
+    models_[BRAD_MODEL].model = glmReadOBJ("models/brad.obj");
+    glmUnitize(models_[BRAD_MODEL].model);
+    models_[BRAD_MODEL].idx = glmList(models_[BRAD_MODEL].model,GLM_SMOOTH);
+
+    /*
     //Create grid
     models_["grid"].idx = glGenLists(1);
     glNewList(models_["grid"].idx,GL_COMPILE);
@@ -139,6 +150,9 @@ void DrawEngine::load_models() {
     cout << "\t \033[32mgrid compiled\033[0m" << endl;
     models_["skybox"].idx = glGenLists(1);
     glNewList(models_["skybox"].idx,GL_COMPILE);
+    */
+
+    /*
     //Be glad we wrote this for you...ugh.
     glBegin(GL_QUADS);
     float fExtent = 50.f;
@@ -169,12 +183,18 @@ void DrawEngine::load_models() {
     glEnd();
     glEndList();
     cout << "\t \033[32mskybox compiled\033[0m" << endl;
+    */
 }
 /**
   @paragraph Loads shaders used by the program.  Caleed by the ctor once upon
   initialization.
 **/
 void DrawEngine::load_shaders() {
+    shader_programs_["reflect"] = new QGLShaderProgram(context_);
+    shader_programs_["reflect"]->addShaderFromSourceFile(QGLShader::Vertex,"shaders/reflect.vert");
+    shader_programs_["reflect"]->addShaderFromSourceFile(QGLShader::Fragment,"shaders/reflect.frag");
+   shader_programs_["reflect"]->link();
+
     shader_programs_["ropetest"] = new QGLShaderProgram(context_);
     shader_programs_["ropetest"]->addShaderFromSourceFile(QGLShader::Vertex,"shaders/ropetest.vert");
     shader_programs_["ropetest"]->addShaderFromSourceFile(QGLShader::Fragment,"shaders/ropetest.frag");
@@ -196,7 +216,7 @@ void DrawEngine::load_textures() {
     textures_["cube_map_1"] = load_cube_map(fileList);
 
     textures_["rope_occlusion"] = load_texture(new QFile("textures/ropeOcc.png"));
-    textures_["rope_normal"] = load_texture(new QFile("textures/ropeNorm.png"));
+    textures_["rope_normal"] = load_texture(new QFile("textures/ropeNorm2.png"));
 }
 /**
   @paragraph Creates the intial framebuffers for drawing.  Called by the ctor once

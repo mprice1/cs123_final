@@ -28,7 +28,7 @@ void main()
 	
 	gl_Position.y += sag * (cosh((d1-len/2)/sag) - cosh(-len/2/sag));
 
-	lightoff = normalize(gl_LightSource[0].position - gl_ModelViewMatrix * gl_Vertex );
+	lightoff = normalize(gl_ModelViewMatrix * gl_Vertex - gl_LightSource[0].position);
 	
 }
 

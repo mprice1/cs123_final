@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     math/CS123Matrix.cpp \
     shot/shot.cpp \
     targa.cpp \
-    shot/testShot.cpp
+    shot/testShot.cpp \
+    shot/orbshot.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     lib/CS123Common.h \
     shot/shot.h \
     targa.h \
-    shot/testShot.h
+    shot/testShot.h \
+    shot/orbshot.h
 
 FORMS    += mainwindow.ui
 INCLUDEPATH += lib math shot
