@@ -6,8 +6,10 @@
 class NMPlane
 {
 public:
-    NMPlane(int stacks, int slices);
-    void makeGeometry(int stacks, int slices);
+    NMPlane(int xtess, int ytess);
+    ~NMPlane();
+    void makeGeometry();
+    void draw();
 
 
     Vector4* verts;
@@ -16,6 +18,8 @@ public:
     vec2<REAL>* texs;
 
     int numVerts;
+private:
+    int xtess, ytess;
 };
 
 #endif // NMPLANE_H

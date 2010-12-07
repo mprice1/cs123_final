@@ -45,16 +45,16 @@ void PolarShapes::begin(){
     m_shapes->clear();
     QList<Shapes>* temp = NULL;
 
-    //    temp = PolarShapes::makeShapes(100,40);
-    //    m_shapes->append(*temp);
-    //    temp->clear();
-    //    delete temp;
+        temp = PolarShapes::makeShapes(100,40);
+        m_shapes->append(*temp);
+        temp->clear();
+        delete temp;
 
     //temp = PolarShapes::makeRectShapesNonRand(80,80,-160,160,-160,160);
-    temp = PolarShapes::makeRectShapesNonRand(20,100,-40,80,-120,200);
-    m_shapes->append(*temp);
-    temp->clear();
-    delete temp;
+//    temp = PolarShapes::makeRectShapesNonRand(20,100,-40,80,-120,200);
+//    m_shapes->append(*temp);
+//    temp->clear();
+//    delete temp;
 
     //    temp = PolarShapes::makeRectShapes(5,5,-50,50,-50,50);
     //    m_shapes->append(*temp);
@@ -99,12 +99,13 @@ void PolarShapes::draw(){
         Shapes s = m_shapes->at(i);
 
         glPushMatrix();
-        //glRotated(s.r.angle, s.r.x,s.r.y,s.r.z);
+        glTranslated(s.t.x,s.t.y,0);
+        glRotated(s.r.angle, s.r.x,s.r.y,s.r.z);
         //glTranslated(s.t.x,s.t.y,5 * sin(m_framecount / 20 + s.polt));
         //glTranslated(s.t.x,s.t.y,(40 - s.polr) * sin(m_framecount / 20 - s.polr / 15) / (m_framecount / 20 - s.polr / 15));
         //gluCylinder(m_quadric,.25,0,10,10,10);
 
-        glTranslated(s.t.x,s.t.y,2 * sin(m_framecount / 20 - (double) s.rectx / 10 - (double) s.recty / 7));
+        glTranslated(0,0,2 * sin(m_framecount / 20 - (double) s.rectx / 10 - (double) s.recty / 7));
 
         glRotated(-90,1,0,0);
         glScaled(5,5,5);
@@ -147,6 +148,13 @@ QList<Shapes>* PolarShapes::makeShapes(int numshapes, double radius){
         double r6 = (double) rand() / (double) RAND_MAX;
         r6 *= 2;
         r6 -= 1;
+
+//        double r1pow = r1;
+
+//        for (int j = 0; j < 2; j++){
+//            r1pow = r1pow * r1;
+//        }
+
 
         double rloc = r1 * radius;
         double tloc = r2 * 2 * M_PI;
