@@ -48,7 +48,11 @@ void Shot::drawSphere()
     glBindTexture(GL_TEXTURE_2D,textures_->value(CRACK_NORM));
     shader_programs_->value(CRACK_SHADER)->setUniformValue("normalmap",1);
 
+
+
     shader_programs_->value(CRACK_SHADER)->bind();
+
+    shader_programs_->value(CRACK_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
     NMSphere * sph = m_engine->nm_sphere;
     glBegin(GL_TRIANGLES);

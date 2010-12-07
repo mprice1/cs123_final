@@ -1,14 +1,33 @@
-#include "orbshot.h"
+#include "spiralorbshot.h"
 #include "drawengine.h"
 
-
-
-
-OrbShot::OrbShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
+spiralOrbShot::spiralOrbShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
 {
+    m_lifespan = 300;
+
+     n =10;
+     nlist = new Vector4[n];
+     rlist =  new rope[n-1];
+
+    for(int i=0; i<n; i++)
+    {
+        float ry,rz,dy,sc;
+        ry = i * 360.0/((float)n);
+        rz = ry/2;
+        dy = 0.7;
+        sc = .25;
+
+        nlist[i] = Vector4(ry,rz,dy,sc);
+        if(i!=0)
+        {
+            rlist[i-1]= ropeFromNailVecs(nlist[i-1],nlist[i],.05,.3);
+        }
+
+
+    }
 }
 
-void OrbShot::begin()
+void spiralOrbShot::begin()
 {
 
     glShadeModel(GL_SMOOTH);
@@ -27,14 +46,18 @@ void OrbShot::begin()
 }
 
 
-void OrbShot::update()
+void spiralOrbShot::update()
 {
     m_framesElapsed++;
+    if(m_framesElapsed>= m_lifespan)
+    {
+        m_engine->endShot();
+    }
 
 }
 
 
-void OrbShot::draw()
+void spiralOrbShot::draw()
 {
 
 glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -42,12 +65,10 @@ glEnable(GL_DEPTH_TEST);
 
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
-
+glRotatef( ((float)m_framesElapsed+1.0), 0, 1, 0);
 //sphere
 drawSphere();
 
-glTranslatef(5,0,0);
-drawSphere();
 
 
 /*
@@ -66,8 +87,7 @@ shader_programs_->value(ROPE_SHADER)->bind();
  shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
  shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 //******
-rope myrope = makeRopeLine(Vector4(0.0,0.7,0.0,1),Vector4(0.5,0.5,0,1), .025, 0.5);
-//drawRope(myrope, true);
+
 
 
 
@@ -88,27 +108,12 @@ Vector4 nail2 = Vector4(    45.0, m_framesElapsed%360,    1,    .5);
 //drawNailFromVec(nail2);
 rope r = ropeFromNailVecs(nail1,nail2,.05,.5);
 
-int n =10;
-Vector4 nlist[n];
-rope rlist[n-1];
+
 
 for(int i=0; i<n; i++)
 {
-    float ry,rz,dy,sc;
-    ry = i * 360.0/((float)n);
-    rz = ry/2;
-    dy = 0.7;
-    sc = .25;
-
-    nlist[i] = Vector4(ry,rz,dy,sc);
-    if(i!=0)
-    {
-        rlist[i-1]= ropeFromNailVecs(nlist[i-1],nlist[i],.05,.4);
-    }
-
     drawNailFromVec(nlist[i]);
 }
-
 
 shader_programs_->value(ROPE_SHADER)->bind();
  glActiveTexture(GL_TEXTURE0);
@@ -130,14 +135,11 @@ shader_programs_->value(ROPE_SHADER)->bind();
 
 
 //.75 is the golden number for nail attatchment?
-
-
-
 glPopMatrix();
 
 }
 
-rope OrbShot::ropeFromNailVecs(vec4<REAL> nv1, vec4<REAL> nv2, float rad, float sag)
+rope spiralOrbShot::ropeFromNailVecs(vec4<REAL> nv1, vec4<REAL> nv2, float rad, float sag)
 {
     //VECTOR ENCODED LIKE SO:  ry rz dy sc
     //get world space points
@@ -165,8 +167,8 @@ rope OrbShot::ropeFromNailVecs(vec4<REAL> nv1, vec4<REAL> nv2, float rad, float 
     Vector4 pt2 = modelview * Vector4(0,0.75+(nv2.z*nv2.w),0,1);
     glPopMatrix();
 
-pt1= pt1/pt1.w;
-pt2 = pt2/pt2.w;
+//pt1= pt1/pt1.w;
+//pt2 = pt2/pt2.w;
 
 pt1.x = -pt1.x;
 pt2.x = -pt2.x;
@@ -175,7 +177,7 @@ pt2.x = -pt2.x;
 
 }
 
-void OrbShot::drawNailFromVec(Vector4 nv)
+void spiralOrbShot::drawNailFromVec(Vector4 nv)
 {
     //VECTOR ENCODED LIKE SO:  ry rz dy sc
     glPushMatrix();
