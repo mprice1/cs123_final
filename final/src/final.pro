@@ -25,6 +25,8 @@ SOURCES += main.cpp\
     shot/orbshot.cpp \
     Structs.cpp \
     shot/pshapes.cpp \
+    nmsphere.cpp \
+    nmplane.cpp \
     shot/polarshapes.cpp
 
 HEADERS  += mainwindow.h \
@@ -42,6 +44,8 @@ HEADERS  += mainwindow.h \
     shot/testShot.h \
     shot/orbshot.h \
     shot/pshapes.h \
+    nmsphere.h \
+    nmplane.h \
     shot/polarshapes.h
 
 FORMS    += mainwindow.ui
