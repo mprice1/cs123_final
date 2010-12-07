@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     nmsphere.cpp \
     nmplane.cpp \
     shot/spiralorbshot.cpp \
-    shot/intronailshot.cpp
+    shot/intronailshot.cpp \
+    shot/tempshot.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -50,7 +51,8 @@ HEADERS  += mainwindow.h \
     nmsphere.h \
     nmplane.h \
     shot/spiralorbshot.h \
-    shot/intronailshot.h
+    shot/intronailshot.h \
+    shot/tempshot.h
 
 FORMS    += mainwindow.ui
 INCLUDEPATH += lib math shot

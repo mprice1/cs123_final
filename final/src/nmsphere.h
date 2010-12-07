@@ -6,6 +6,7 @@ class NMSphere
 {
 public:
     NMSphere(int stacks, int slices);
+    ~NMSphere();
     void makeGeometry(int stacks, int slices);
 
 

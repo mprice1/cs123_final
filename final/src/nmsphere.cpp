@@ -5,6 +5,25 @@ NMSphere::NMSphere(int stacks, int slices)
     makeGeometry(stacks, slices);
 }
 
+NMSphere::~NMSphere(){
+    if (verts){
+        delete[] verts;
+        verts = NULL;
+    }
+    if (norms){
+        delete[] norms;
+        norms = NULL;
+    }
+    if(tans){
+        delete[] tans;
+        tans = NULL;
+    }
+    if (texs){
+        delete[] texs;
+        texs = NULL;
+    }
+}
+
 void NMSphere::makeGeometry(int stacks, int slices)
 {
     int numFaces = stacks * slices * 2;
