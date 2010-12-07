@@ -147,27 +147,7 @@ for(int i=0; i<5; i++)
 glPushMatrix();
 glTranslatef(0,1.5,0);
 
-for(int i=0; i<8; i++)
-{
-    glPushMatrix();
-    glRotatef(i*45,0,1.0,0);
-    for(int j=0; j<4; j++)
-    {
-        glPushMatrix();
-        glRotatef(45*j,0,0,1);
-        glTranslatef(0,1.0,0);
-        if((i+j)%3==2)
-        {
-            glCallList(models_->value(NAIL_MODEL).idx);
-        }
-        else
-        {
-            glCallList(models_->value(BRAD_MODEL).idx);
-        }
-        glPopMatrix();
-    }
-    glPopMatrix();
-}
+drawNailBall();
 
 glPopMatrix();
 

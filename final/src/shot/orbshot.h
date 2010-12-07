@@ -17,6 +17,9 @@ public:
 
     //draw!
     void draw();
+
+    rope ropeFromNailVecs(Vector4 nv1, Vector4 nv2, float rad=.05, float sag =0);
+    void drawNailFromVec(Vector4 nv);
 };
 
 #endif // ORBSHOT_H
