@@ -37,6 +37,40 @@ void Shot::draw()
 
 }
 
+//draws the unit NMsphere at the origin
+void Shot::drawSphere()
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(CRACK_COLOR));
+    shader_programs_->value(CRACK_SHADER)->setUniformValue("colormap",0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(CRACK_NORM));
+    shader_programs_->value(CRACK_SHADER)->setUniformValue("normalmap",1);
+
+    shader_programs_->value(CRACK_SHADER)->bind();
+
+    NMSphere * sph = m_engine->nm_sphere;
+    glBegin(GL_TRIANGLES);
+    for(int i=0; i<sph->numVerts; i++)
+    {
+
+    //set tangent attribute
+        //shader_programs_->value(CRACK_SHADER)->setAttributeValue("intan",(float)sph->tans[i].x,(float)sph->tans[i].y,(float)sph->tans[i].z);
+    //set normal
+        glNormal3f(sph->norms[i].x , sph->norms[i].y , sph->norms[i].z );
+    //set tex coord
+        glTexCoord2f(sph->texs[i].x,sph->texs[i].y);
+
+    //set vertex
+        glVertex3d(sph->verts[i].x,sph->verts[i].y,sph->verts[i].z);
+    }
+    glEnd();
+
+    shader_programs_->value(CRACK_SHADER)->release();
+
+}
+
 void Shot::drawRope(rope myrope)
 {
     shader_programs_->value(ROPE_SHADER)->setUniformValue("start",myrope.start.x, myrope.start.y, myrope.start.z, myrope.start.w);

@@ -20,7 +20,7 @@ void testShot::begin()
 {
 
 glShadeModel(GL_SMOOTH);
-glClearColor(0.2f,0.2f,0.2f,0.0f);
+glClearColor(0.8f,0.8f,0.8f,0.0f);
     glEnable(GL_LIGHTING);
 
     //Make some lights!
@@ -74,16 +74,17 @@ void testShot::draw()
     glMatrixMode(GL_MODELVIEW);
 
    shader_programs_->value(ROPE_SHADER)->bind();
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
-    glActiveTexture(GL_TEXTURE0);
-    shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",GL_TEXTURE0);
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
 
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_NORM));
 
-    shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",GL_TEXTURE1);
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",1);
 
     shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
 
 
@@ -118,8 +119,9 @@ void testShot::draw()
 
  glActiveTexture(GL_TEXTURE0);
  glBindTexture(GL_TEXTURE_CUBE_MAP, textures_->value("cube_map_1"));
- shader_programs_->value("reflect")->bind();
- shader_programs_->value("reflect")->setUniformValue("CubeMap",GL_TEXTURE0);
+ shader_programs_->value(NAIL_SHADER)->bind();
+ shader_programs_->value(NAIL_SHADER)->setUniformValue("CubeMap",GL_TEXTURE0);
+ shader_programs_->value(NAIL_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
 for(int i=0; i<5; i++)
  {
@@ -170,6 +172,8 @@ for(int i=0; i<8; i++)
 glPopMatrix();
 
 shader_programs_->value("reflect")->release();
+
+drawSphere();
 
 
 }

@@ -20,6 +20,10 @@
 #define NAIL_MODEL "nailgeom"
 #define BRAD_MODEL "bradgeom"
 
+#define CRACK_SHADER "crackshader"
+#define CRACK_COLOR "crackcolor"
+#define CRACK_NORM "cracknormal"
+
 
 class QGLContext;
 class QGLShaderProgram;
@@ -27,6 +31,7 @@ class QFile;
 class QGLFramebufferObject;
 class QKeyEvent;
 class Shot;
+class NMSphere;
 
 
 class DrawEngine {
@@ -48,7 +53,8 @@ public:
     void endShot();
 
     //member variables
-
+    Camera                                      camera_; ///a simple camera struct
+    NMSphere* nm_sphere;
 protected:
 
     //methods
@@ -72,7 +78,7 @@ protected:
     QHash<QString, GLuint>                      textures_; ///hashmap of all textures
     const QGLContext                            *context_; ///the current OpenGL context to render to
     float                                       previous_time_, fps_; ///the previous time and the fps counter
-    Camera                                      camera_; ///a simple camera struct
+
 
     int     m_curShot;//current shot
     QList<Shot*>* m_shots; //list of shots

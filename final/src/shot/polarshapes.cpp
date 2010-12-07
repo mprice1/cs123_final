@@ -29,7 +29,7 @@ void PolarShapes::begin(){
     srand(time(NULL));
 
     glShadeModel(GL_SMOOTH);
-    glClearColor(0.2f,0.2f,0.2f,0.0f);
+    glClearColor(0.8f,0.8f,0.8f,0.0f);
     glEnable(GL_LIGHTING);
     //Make some lights!
     glEnable(GL_LIGHT0);
@@ -51,7 +51,7 @@ void PolarShapes::begin(){
     //    delete temp;
 
     //temp = PolarShapes::makeRectShapesNonRand(80,80,-160,160,-160,160);
-    temp = PolarShapes::makeRectShapesNonRand(20,100,-20,20,-100,100);
+    temp = PolarShapes::makeRectShapesNonRand(20,100,-40,80,-120,200);
     m_shapes->append(*temp);
     temp->clear();
     delete temp;
@@ -86,13 +86,14 @@ void PolarShapes::draw(){
     glPushMatrix();
     glTranslated(0,0,2);
 //    gluDisk(m_quadric,0,100,4,4);
-    gluDisk(m_quadric,0,400,30,30);
+  //  gluDisk(m_quadric,0,400,30,30);
     glPopMatrix();
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textures_->value("cube_map_1"));
-    shader_programs_->value("reflect")->bind();
-    shader_programs_->value("reflect")->setUniformValue("CubeMap",GL_TEXTURE0);
+    shader_programs_->value(NAIL_SHADER)->bind();
+    shader_programs_->value(NAIL_SHADER)->setUniformValue("CubeMap",GL_TEXTURE0);
+    shader_programs_->value(NAIL_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
     for(int i = 0; i < m_shapes->length(); i++){
         Shapes s = m_shapes->at(i);

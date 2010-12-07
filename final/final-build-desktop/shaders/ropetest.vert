@@ -3,9 +3,10 @@ uniform sampler2D normalmap;
 uniform vec4 start;
 uniform vec4 end;
 uniform float sag;
+uniform vec3 eyept;
 
+varying float eyedist;
 varying vec3 lightoff;
-
 varying vec3 normal;
 varying vec3 tan;
 varying vec3 bitan;
@@ -26,10 +27,10 @@ void main()
 
 	gl_Position = ftransform();
 	
-	gl_Position.y += sag * (cosh((d1-len/2)/sag) - cosh(-len/2/sag));
+	gl_Position.y += sag * (cosh((d1-len/2.0)/sag) - cosh(-len/2.0/sag));
 
 	lightoff = normalize(gl_LightSource[0].position - gl_ModelViewMatrix * gl_Vertex );
-	
+	eyedist = length(vec3(gl_ModelViewMatrix * gl_Vertex) - eyept);
 }
 
 float cosh(float val)

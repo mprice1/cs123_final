@@ -1,4 +1,6 @@
+uniform vec3 eyept;
 varying vec3 normal, lightDir, r;
+varying float eyedist;
 const vec3 L = vec3(0.,0.,1.);
 void main()
 {	
@@ -9,5 +11,7 @@ void main()
 	normal = normalize( gl_NormalMatrix * gl_Normal );
 	vec3 I = normalize(vVertex - eyeVec.xyz); // Eye to vertex
   r = reflect(I,normal);
+	eyedist = length(vVertex - eyept);
+	
 }
 

@@ -7,6 +7,8 @@
 #include <qgl.h>
 #include <common.h>
 #include <CS123Algebra.h>
+
+#include "nmsphere.h"
 class DrawEngine;
 
 struct rope
@@ -48,12 +50,14 @@ public:
     rope makeRopeLine(Vector4 pt1, Vector4 pt2);
     void drawRope(rope r);
 
+    void drawSphere();
+
 
 protected:
     //increment at the beginning of update or something.
     int m_framesElapsed;
     int m_lifespan;
-    DrawEngine* m_engine;
+    DrawEngine* m_engine;    
 
     /**
       Resources taken from engine:
@@ -72,4 +76,7 @@ protected:
 
 };
 
+extern "C"{
+    extern void APIENTRY glActiveTexture(GLenum);
+}
 #endif // SHOT_H

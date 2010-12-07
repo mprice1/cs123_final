@@ -65,6 +65,7 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context
     camera_.near = 0.1f,camera_.far = 100.f;
     camera_.fovy = 60.f;
 
+    nm_sphere = new NMSphere(12,12);
 
     //init resources - so i heard you like colored text?
     cout << "Using OpenGL Version " << glGetString(GL_VERSION) << endl << endl;
@@ -84,11 +85,11 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context
     m_shots = new QList<Shot*>();
     m_curShot =0;
 
-//    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
+    //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
 //    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
 //    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
 
-    m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
+   m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
 
     m_shots->at(m_curShot)->begin();
     /****************************************/
@@ -201,6 +202,11 @@ void DrawEngine::load_shaders() {
     shader_programs_["ropetest"]->addShaderFromSourceFile(QGLShader::Vertex,"shaders/ropetest.vert");
     shader_programs_["ropetest"]->addShaderFromSourceFile(QGLShader::Fragment,"shaders/ropetest.frag");
    shader_programs_["ropetest"]->link();
+
+   shader_programs_[CRACK_SHADER] = new QGLShaderProgram(context_);
+   shader_programs_[CRACK_SHADER]->addShaderFromSourceFile(QGLShader::Vertex,"shaders/crack.vert");
+   shader_programs_[CRACK_SHADER]->addShaderFromSourceFile(QGLShader::Fragment,"shaders/crack.frag");
+  shader_programs_[CRACK_SHADER]->link();
 }
 /**
   @paragraph Loads textures used by the program.  Called by the ctor once upon
@@ -219,6 +225,9 @@ void DrawEngine::load_textures() {
 
     textures_["rope_occlusion"] = load_texture(new QFile("textures/ropeOcc.png"));
     textures_["rope_normal"] = load_texture(new QFile("textures/ropeNorm2.png"));
+    textures_[CRACK_COLOR] = load_texture(new QFile("textures/crackColor.png"));
+    textures_[CRACK_NORM] = load_texture(new QFile("textures/crackNorm.png"));
+
 }
 /**
   @paragraph Creates the intial framebuffers for drawing.  Called by the ctor once
