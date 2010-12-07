@@ -19,6 +19,7 @@ Vector4 end;
 Vector4* pts;
 Vector4* norms;
 vec2<REAL>* texs;
+float sag;
 
 /*~rope()
 {
@@ -47,11 +48,11 @@ public:
     //draw!
     virtual void draw();
 
-    rope makeRopeLine(Vector4 pt1, Vector4 pt2);
-    void drawRope(rope r);
+    rope makeRopeLine(Vector4 pt1, Vector4 pt2, float radius=.05, float sag = 0);
+    void drawRope(rope r, bool useSag = false);
 
     void drawSphere();
-
+    void drawNailBall();
 
 protected:
     //increment at the beginning of update or something.

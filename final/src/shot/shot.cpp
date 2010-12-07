@@ -48,7 +48,11 @@ void Shot::drawSphere()
     glBindTexture(GL_TEXTURE_2D,textures_->value(CRACK_NORM));
     shader_programs_->value(CRACK_SHADER)->setUniformValue("normalmap",1);
 
+
+
     shader_programs_->value(CRACK_SHADER)->bind();
+
+    shader_programs_->value(CRACK_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
     NMSphere * sph = m_engine->nm_sphere;
     glBegin(GL_TRIANGLES);
@@ -56,7 +60,7 @@ void Shot::drawSphere()
     {
 
     //set tangent attribute
-        //shader_programs_->value(CRACK_SHADER)->setAttributeValue("intan",(float)sph->tans[i].x,(float)sph->tans[i].y,(float)sph->tans[i].z);
+      //  shader_programs_->value(CRACK_SHADER)->setAttributeValue("intan",(float)sph->tans[i].x,(float)sph->tans[i].y,(float)sph->tans[i].z);
     //set normal
         glNormal3f(sph->norms[i].x , sph->norms[i].y , sph->norms[i].z );
     //set tex coord
@@ -71,8 +75,37 @@ void Shot::drawSphere()
 
 }
 
-void Shot::drawRope(rope myrope)
+void Shot::drawNailBall()
 {
+    for(int i=0; i<8; i++)
+    {
+        glPushMatrix();
+        glRotatef(i*45,0,1.0,0);
+        for(int j=0; j<4; j++)
+        {
+            glPushMatrix();
+            glRotatef(45*j,0,0,1);
+            glTranslatef(0,1.0,0);
+            if((i+j)%3==2)
+            {
+                glCallList(models_->value(NAIL_MODEL).idx);
+            }
+            else
+            {
+                glCallList(models_->value(BRAD_MODEL).idx);
+            }
+            glPopMatrix();
+        }
+        glPopMatrix();
+    }
+}
+
+void Shot::drawRope(rope myrope, bool useSag)
+{
+    if(useSag)
+    {
+        shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",myrope.sag);
+    }
     shader_programs_->value(ROPE_SHADER)->setUniformValue("start",myrope.start.x, myrope.start.y, myrope.start.z, myrope.start.w);
     shader_programs_->value(ROPE_SHADER)->setUniformValue("end",myrope.end.x,myrope.end.y,myrope.end.z,myrope.end.w);
     glBegin(GL_QUAD_STRIP);
@@ -85,10 +118,10 @@ void Shot::drawRope(rope myrope)
     glEnd();
 }
 
-rope Shot::makeRopeLine(Vector4 pt1, Vector4 pt2)
+rope Shot::makeRopeLine(Vector4 pt1, Vector4 pt2, float radius, float sag)
 {
     //Same math as ropeLine()
-    float stringRadius = .05;
+    float stringRadius = radius;
     Vector4 line = pt2-pt1;
     float distance = (line).getMagnitude();
     int tess = (int)(8*distance);
@@ -116,6 +149,7 @@ rope Shot::makeRopeLine(Vector4 pt1, Vector4 pt2)
     //  TESSELATE THE ROPE
     rope* t = new rope();
     rope newRope = *t;
+    newRope.sag = sag;
     newRope.numVerts = tess * 18;
     newRope.start = pt1;
     newRope.end = pt2;

@@ -25,9 +25,9 @@ SOURCES += main.cpp\
     shot/orbshot.cpp \
     Structs.cpp \
     shot/pshapes.cpp \
+    shot/polarshapes.cpp \
     nmsphere.cpp \
-    nmplane.cpp \
-    shot/polarshapes.cpp
+    nmplane.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \

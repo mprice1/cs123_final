@@ -3,7 +3,9 @@ attribute vec3 intan;
 uniform sampler2D colormap;
 uniform sampler2D normalmap;
 
+uniform vec3 eyept;
 
+varying float eyedist;
 
 varying vec3 lightoff;
 varying vec3 normal;
@@ -20,4 +22,5 @@ void main()
 
 	gl_Position = ftransform();
 	lightoff = normalize(gl_LightSource[0].position - gl_ModelViewMatrix * gl_Vertex );
+	eyedist = length(vec3(gl_ModelViewMatrix * gl_Vertex) - eyept);
 }
