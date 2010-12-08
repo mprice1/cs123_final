@@ -17,6 +17,7 @@ struct Rotation{
 struct Shapes{
     Translation t;
     Rotation r;
+    bool shape;
     int rectx;
     int recty;
     double polr;
