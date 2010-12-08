@@ -18,6 +18,7 @@ upRopeShot::upRopeShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* sh
 
     upRopeShot::~upRopeShot()
     {
+        delete r1;
 
     }
 
