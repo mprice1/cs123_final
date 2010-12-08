@@ -26,6 +26,7 @@
 #include <orbshot.h>
 #include <spiralorbshot.h>
 #include <tempshot.h>
+#include <intronailshot.h>
 
 /*
  Common shader and texture names are defined as constants
@@ -88,13 +89,15 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context
     m_shots = new QList<Shot*>();
     m_curShot =0;
 
-    //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
-    //m_shots->append(  new TempShot(this, &shader_programs_, &textures_, &models_));
 
-    //m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
+    //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
+
+
+   // m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
 //    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
 
-   m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
+ //  m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
 
     m_shots->at(m_curShot)->begin();
     /****************************************/
