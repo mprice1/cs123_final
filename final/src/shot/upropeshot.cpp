@@ -8,6 +8,10 @@
 upRopeShot::upRopeShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
     {
     m_rope = makeRopeLine(Vector4(0,5,0,1), Vector4(0,-5,0,1),.05,100);
+
+    r1 = new rope;
+    *r1 = makeRopeLine(Vector4(-2,0,0,1), Vector4(2,0,0,1), .05, 1 );
+    //*r2 = makeRopeLine();
     dh = 0;
     }
 
@@ -63,24 +67,116 @@ upRopeShot::upRopeShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* sh
          shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)m_rope.sag);
          shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
+         //MASTER TRANSFORM
+        glPushMatrix();
+        glTranslatef(0,0,1.25);
 
         //ROPE TRANSFORM
-        dh += 0.001;
+        dh += 0.005;
         if(dh>10)
             dh=0;
 
          glPushMatrix();
-        glTranslatef(0,-dh,0);
+        glTranslatef(-0.5,-dh,0);
+        glRotatef(-15,0,0,1);
         glRotatef((float)m_framesElapsed/2.0,0,1,0);
         drawRope(m_rope);
         glTranslatef(0,10,0);
         drawRope(m_rope);
-
-
-
         glPopMatrix();
+
+        float h = 5.0;
+        //****** FIRST DISTANT ROPE
+        glPushMatrix();
+        glScalef(2,1,1);
+        glTranslatef(0,h- (m_framesElapsed/50.0),-2);
+        glRotatef(15,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+
+        h = 7.0;
+        //****** SECOND DISTANT ROPES
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h- (m_framesElapsed/50.0),-1);
+        glRotatef(-15,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h - (m_framesElapsed/50.0),-2);
+        glRotatef(-7,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+
+        h=8.0;
+        //****** THIRD DISTANT ROPES
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h- (m_framesElapsed/50.0),-2);
+        glRotatef(-40,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h- (m_framesElapsed/50.0),-3);
+        glRotatef(12,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h - (m_framesElapsed/50.0),-2.5);
+        glRotatef(-7,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+
+        h=12.0;
+        //****** THIRD DISTANT ROPES
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h- (m_framesElapsed/50.0),-2);
+        glRotatef(-40,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h- (m_framesElapsed/50.0),-3);
+        glRotatef(12,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+        glPushMatrix();
+        glScalef(2.5,1,1);
+        glTranslatef(0,h - (m_framesElapsed/50.0),-2.5);
+        glRotatef(-7,0,0,1);
+        drawRope(*r1,true);
+        glPopMatrix();
+
+        //***** CLOSE ASS ROPE
+        h=11.0;
+          glPushMatrix();
+          glScalef(2.5,1,1);
+          glTranslatef(0,h- (m_framesElapsed/100.0),0.25);
+          glRotatef(0,0,0,1);
+          drawRope(*r1,true);
+          glPopMatrix();
+
+
         //******** RELEASE ROPE SHADER
         shader_programs_->value(ROPE_SHADER)->release();
+
+        //******* NAIL BALL
+        glPushMatrix();
+        glTranslatef(4,-4,-1);
+
+        glRotatef(-50,0,0,1);
+        glTranslatef(-(float)m_framesElapsed / 150.0, 0.1 * sin((float)m_framesElapsed/25.0),0);
+
+        glScalef(.1,.1,.1);
+        drawNailBall();
+        glPopMatrix();
+
+        //MASTER TRANSFORM
+        glPopMatrix();
 
     }
 

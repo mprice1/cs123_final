@@ -20,6 +20,10 @@ public:
 
 protected:
     rope m_rope;
+
+    rope* r1;
+    rope* r2;
+
     float dh;
 };
 

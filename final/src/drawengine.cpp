@@ -28,6 +28,7 @@
 #include <tempshot.h>
 #include <intronailshot.h>
 #include <polaranimated.h>
+#include <polaranimated2.h>
 #include <nailsinfield.h>
 #include <upropeshot.h>
 
@@ -95,10 +96,10 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context
 
     //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
+    //m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
 
-     m_shots->append(  new upRopeShot(this, &shader_programs_, &textures_, &models_));
-    m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
-
+    m_shots->append(new upRopeShot(this,  &shader_programs_, &textures_, &models_));
+    m_shots->append(  new PolarAnimated2(this, &shader_programs_, &textures_, &models_));
     m_shots->append(  new nailSinField(this, &shader_programs_, &textures_, &models_));
    m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
 
