@@ -1,9 +1,9 @@
-#include "polaranimated.h"
+#include "polaranimated2.h"
 #include <polarshapes.h>
 #include <drawengine.h>
 #include <CS123Common.h>
 
-PolarAnimated::PolarAnimated(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL)
+PolarAnimated2::PolarAnimated2(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL)
 {
     //lasts 150 frames
     m_lifespan = 150000;
@@ -16,7 +16,7 @@ PolarAnimated::PolarAnimated(DrawEngine* parent,QHash<QString, QGLShaderProgram 
     ground = new NMPlane(6,6);
 }
 
-PolarAnimated::~PolarAnimated(){
+PolarAnimated2::~PolarAnimated2(){
     if(m_shapes){
         m_shapes->clear();
         delete m_shapes;
@@ -32,14 +32,14 @@ PolarAnimated::~PolarAnimated(){
 extern "C"{
     extern void APIENTRY glActiveTexture(GLenum);
 }
-void PolarAnimated::update(){
+void PolarAnimated2::update(){
 
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
 }
 
-void PolarAnimated::begin(){
+void PolarAnimated2::begin(){
     srand(time(NULL));
 
     glShadeModel(GL_SMOOTH);
@@ -64,7 +64,7 @@ void PolarAnimated::begin(){
     temp->clear();
     delete temp;
 
-    temp = PolarAnimated::makeRing(9,55);
+    temp = PolarAnimated2::makeRing(9,55);
     m_shapes_ring->append(*temp);
     temp->clear();
     delete temp;
@@ -98,7 +98,7 @@ void PolarAnimated::begin(){
 
 }
 //draw!
-void PolarAnimated::draw(){
+void PolarAnimated2::draw(){
     glMatrixMode(GL_MODELVIEW);
 
     m_framecount++;
@@ -106,9 +106,10 @@ void PolarAnimated::draw(){
     double framecount = m_framecount * .3;
 
     glPushMatrix();
-    glRotated(framecount / 3,0,-1,0);
-    double scale = (60 - framecount) / 20;
-    scale = MAX(scale, .2);
+    glRotated(framecount * 1.5,0,1,0);
+    //double scale = (60 - m_framecount) / 20;
+    //scale = MAX(scale, .2);
+    double scale = .2;
     glScaled(scale, scale, scale);
 
 
@@ -161,7 +162,7 @@ shader_programs_->value(CRACK_SHADER)->release();
         //gluCylinder(m_quadric,.25,0,10,10,10);
 
         double temp = framecount / 15 - s.polr / 10 - 3;
-        temp = MAX(temp, .1);
+        temp = MIN(temp, -.1);
         glTranslated(0,0,10 * sin(temp) / (temp * temp * temp * temp));
 
         glRotated(-90,1,0,0);
@@ -227,7 +228,7 @@ shader_programs_->value(CRACK_SHADER)->release();
     glPopMatrix();
 }
 
-QList<Shapes>* PolarAnimated::makeRing(int num, double radius){
+QList<Shapes>* PolarAnimated2::makeRing(int num, double radius){
     QList<Shapes>* toReturn = new QList<Shapes>();
 
     for (int i = 0; i < num; i++){

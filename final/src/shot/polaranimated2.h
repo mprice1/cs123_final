@@ -1,14 +1,14 @@
-#ifndef POLARANIMATED_H
-#define POLARANIMATED_H
+#ifndef POLARANIMATED2_H
+#define POLARANIMATED2_H
 
 #include <shot.h>
 #include <Structs.cpp>
 
-class PolarAnimated : public Shot
+class PolarAnimated2 : public Shot
 {
 public:
-    PolarAnimated(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod);
-    ~PolarAnimated();
+    PolarAnimated2(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod);
+    ~PolarAnimated2();
 
     void begin();
 
@@ -36,4 +36,4 @@ private:
 
 };
 
-#endif // POLARANIMATED_H
+#endif // POLARANIMATED2_H
