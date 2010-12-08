@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     shot/upropeshot.cpp \
     shot/nailsinfield.cpp \
     shot/polaranimated.cpp \
-    shot/polaranimated2.cpp
+    shot/polaranimated2.cpp \
+    shot/polarclusters.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -60,7 +61,8 @@ HEADERS  += mainwindow.h \
     shot/upropeshot.h \
     shot/nailsinfield.h \
     shot/polaranimated.h \
-    shot/polaranimated2.h
+    shot/polaranimated2.h \
+    shot/polarclusters.h
 
 FORMS    += mainwindow.ui
 INCLUDEPATH += lib math shot

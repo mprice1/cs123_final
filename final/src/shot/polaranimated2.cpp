@@ -27,6 +27,7 @@ PolarAnimated2::~PolarAnimated2(){
         delete m_shapes_ring;
         m_shapes_ring = NULL;
     }
+    delete ground;
     gluDeleteQuadric(m_quadric);
 }
 extern "C"{
