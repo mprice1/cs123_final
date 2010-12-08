@@ -200,4 +200,53 @@ return newRope;
     //*********************************************
 }
 
+void Shot::drawUnitRope(int tess)
+{
+   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    float h = 1.0/((float)tess);
+    float m = 0.707106781;
+
+    glBegin(GL_QUAD_STRIP);
+
+    for(int i=0; i<tess;i++)
+    {
+    glTexCoord2f(0.0,1.0);
+    glNormal3f(-m,0.0,m);
+    glVertex3f(-0.5,(i+1)*h,0.5);
+    glTexCoord2f(0.0,0.0);
+    glNormal3f(-m,0.0,m);
+    glVertex3f(-0.5,i*h,0.5);
+
+    glTexCoord2f(0.25,1.0);
+    glNormal3f(m,0.0,m);
+    glVertex3f(0.5,(i+1)*h,0.5);
+    glTexCoord2f(0.25,0.0);
+    glNormal3f(m,0.0,m);
+    glVertex3f(0.5,i*h,0.5);
+
+    glTexCoord2f(0.5,1.0);
+    glNormal3f(m,0.0,-m);
+    glVertex3f(0.5,(i+1)*h,-0.5);
+    glTexCoord2f(0.5,0.0);
+    glNormal3f(m,0.0,-m);
+    glVertex3f(0.5,i*h,-0.5);
+
+    glTexCoord2f(0.75,1.0);
+    glNormal3f(-m,0.0,-m);
+    glVertex3f(-0.5,(i+1)*h,-0.5);
+    glTexCoord2f(0.75,0.0);
+    glNormal3f(-m,0.0,-m);
+    glVertex3f(-0.5,i*h,-0.5);
+
+    glTexCoord2f(1.0,1.0);
+    glNormal3f(-m,0.0,m);
+    glVertex3f(-0.5,(i+1)*h,0.5);
+    glTexCoord2f(1.0,0.0);
+    glNormal3f(-m,0.0,m);
+    glVertex3f(-0.5,i*h,0.5);
+    }
+
+    glEnd();
+}
+
 

@@ -54,6 +54,7 @@ public:
 
     void drawSphere();
     void drawNailBall();
+    void drawUnitRope(int tess);
 
 protected:
     //increment at the beginning of update or something.

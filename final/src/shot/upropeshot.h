@@ -2,7 +2,7 @@
 #define UPROPESHOT_H
 #include <shot.h>
 
-class upRopeShot
+class upRopeShot : public Shot
 {
 public:
     upRopeShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod);
@@ -17,6 +17,10 @@ public:
 
     //draw!
     void draw();
+
+protected:
+    rope m_rope;
+    float dh;
 };
 
 #endif // UPROPESHOT_H
