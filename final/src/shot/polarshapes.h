@@ -26,13 +26,15 @@ public:
     static QList<Shapes>* makeShapes(int numshapes, double radius);
     static QList<Shapes>* makeRectShapes(int numx, int numy, double xmin, double xmax, double ymin, double ymax);
     static QList<Shapes>* makeRectShapesNonRand(int numx, int numy, double xmin, double xmax, double ymin, double ymax);
-
+    void drawStaticShapes(QList<Shapes>* shapes);
 
 private:
     GLUquadric     * m_quadric;
     //float mFPS, m_increment;
     double m_framecount;
     QList<Shapes>* m_shapes;
+
+    QList<Shapes>* m_shapes2;
 };
 
 #endif // POLARSHAPES_H

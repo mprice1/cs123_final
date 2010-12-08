@@ -91,7 +91,7 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context
     //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new TempShot(this, &shader_programs_, &textures_, &models_));
 
-    m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
+    //m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
 //    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
 
    m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
