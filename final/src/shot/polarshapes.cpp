@@ -20,6 +20,11 @@ PolarShapes::~PolarShapes(){
         delete m_shapes;
         m_shapes = NULL;
     }
+    if(m_shapes2){
+        m_shapes2->clear();
+        delete m_shapes2;
+        m_shapes2 = NULL;
+    }
     gluDeleteQuadric(m_quadric);
 }
 extern "C"{
