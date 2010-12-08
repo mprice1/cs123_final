@@ -31,6 +31,7 @@
 #include <polaranimated2.h>
 #include <nailsinfield.h>
 #include <upropeshot.h>
+#include <threenailballs.h>
 
 /*
  Common shader and texture names are defined as constants
@@ -98,6 +99,7 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context
     //m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
 
+     m_shots->append(new threeNailBalls(this,  &shader_programs_, &textures_, &models_));
     m_shots->append(new upRopeShot(this,  &shader_programs_, &textures_, &models_));
     m_shots->append(  new PolarAnimated2(this, &shader_programs_, &textures_, &models_));
     m_shots->append(  new nailSinField(this, &shader_programs_, &textures_, &models_));
