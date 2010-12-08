@@ -147,8 +147,10 @@ rope Shot::makeRopeLine(Vector4 pt1, Vector4 pt2, float radius, float sag)
     glPopMatrix();
     //*********************************************
     //  TESSELATE THE ROPE
-    rope* t = new rope();
-    rope newRope = *t;
+    /*rope* t = new rope();
+    rope newRope = *t;*/
+    rope newRope;
+
     newRope.sag = sag;
     newRope.numVerts = tess * 18;
     newRope.start = pt1;

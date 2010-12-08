@@ -2,6 +2,7 @@
 #define INTRONAILSHOT_H
 #include "shot.h"
 
+
 class introNailShot : public Shot
 {
 public:
@@ -17,6 +18,11 @@ public:
 
     //draw!
     void draw();
+
+protected:
+    NMPlane* nm_plane;
+    rope r1;
+    rope r2;
 
 };
 

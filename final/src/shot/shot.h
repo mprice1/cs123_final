@@ -9,6 +9,7 @@
 #include <CS123Algebra.h>
 
 #include "nmsphere.h"
+#include "nmplane.h"
 class DrawEngine;
 
 struct rope

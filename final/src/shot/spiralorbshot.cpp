@@ -5,7 +5,7 @@ spiralOrbShot::spiralOrbShot(DrawEngine* parent,QHash<QString, QGLShaderProgram 
 {
     m_lifespan = 300;
 
-     n =10;
+     n =25;
      nlist = new Vector4[n];
      rlist =  new rope[n-1];
 
@@ -112,10 +112,11 @@ rope r = ropeFromNailVecs(nail1,nail2,.05,.5);
 
 for(int i=0; i<n; i++)
 {
-    drawNailFromVec(nlist[i]);
+    drawNailFromVec(nlist[i],false);
+    drawNailFromVec(Vector4(nlist[i].x-180, nlist[i].y, nlist[i].z, nlist[i].w),true);
 }
 
-shader_programs_->value(ROPE_SHADER)->bind();
+ shader_programs_->value(ROPE_SHADER)->bind();
  glActiveTexture(GL_TEXTURE0);
  glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
  shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
@@ -128,7 +129,7 @@ shader_programs_->value(ROPE_SHADER)->bind();
  shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
  shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
- for(int i =0; i<n-1; i++)
+ for(int i = 4; i<n-5; i++)
  {
      drawRope(rlist[i],true);
  }
@@ -158,7 +159,7 @@ rope spiralOrbShot::ropeFromNailVecs(vec4<REAL> nv1, vec4<REAL> nv2, float rad, 
     glPushMatrix();
 //    glScalef(nv2.w,nv2.w,nv2.w);
    glRotatef(nv2.y,0,0,1);
-    glRotatef(nv2.x,0,1,0);
+    glRotatef(nv2.x,0,1,0);glTranslatef(0,-0.5,0.5);
 
  //   glTranslatef(0,nv2.z,0);
 
@@ -177,7 +178,7 @@ pt2.x = -pt2.x;
 
 }
 
-void spiralOrbShot::drawNailFromVec(Vector4 nv)
+void spiralOrbShot::drawNailFromVec(Vector4 nv, bool brad)
 {
     //VECTOR ENCODED LIKE SO:  ry rz dy sc
     glPushMatrix();
@@ -185,6 +186,9 @@ void spiralOrbShot::drawNailFromVec(Vector4 nv)
     glRotatef(nv.y,0,0,1);
     glTranslatef(0,nv.z,0);
     glScalef(nv.w,nv.w,nv.w);
-    glCallList(models_->value(NAIL_MODEL).idx);
+    if(brad)
+        glCallList(models_->value(BRAD_MODEL).idx);
+    else
+        glCallList(models_->value(NAIL_MODEL).idx);
     glPopMatrix();
 }

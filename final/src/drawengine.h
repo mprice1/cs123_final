@@ -50,6 +50,7 @@ public:
     //getters and setters
     float fps() { return fps_; }
 
+    void perspective_camera();
     void endShot();
 
     //member variables
@@ -68,6 +69,8 @@ protected:
     GLuint load_cube_map(QList<QFile *> files);
     GLuint load_texture(QFile * tex);
     void create_fbos(int w, int h);
+    int m_w, m_h;
+
 
 
 
