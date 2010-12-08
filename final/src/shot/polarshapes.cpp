@@ -254,7 +254,7 @@ QList<Shapes>* PolarShapes::makeShapes(int numshapes, double radius){
 QList<Shapes>* PolarShapes::makeRectShapesNonRand(int numx, int numy, double xmin, double xmax, double ymin, double ymax){
     QList<Shapes>* toReturn = new QList<Shapes>();
 
-    srand(time(NULL));
+    //srand(time(NULL));
     for (int x = 0; x < numx; x++){
         for (int y = 0; y < numy; y++){
             double xloc = x;
@@ -282,7 +282,7 @@ QList<Shapes>* PolarShapes::makeRectShapes(int numx, int numy, double xmin, doub
     double xwidth = xmax - xmin;
     double ywidth = ymax - ymin;
 
-    srand(time(NULL));
+    //srand(time(NULL));
 
     for (int x = 0; x < numx; x++){
         for (int y = 0; y < numy; y++){
