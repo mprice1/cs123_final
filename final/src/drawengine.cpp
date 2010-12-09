@@ -101,19 +101,32 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
 
     frameNumber = 0;
     m_widget = widget;
-    //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
-    //m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
-    //m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
 
+
+    //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
+
+    //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
+
+    m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
-     m_shots->append(new threeNailBalls(this,  &shader_programs_, &textures_, &models_));
-    m_shots->append(new upRopeShot(this,  &shader_programs_, &textures_, &models_));
-    m_shots->append(  new PolarAnimated2(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
     m_shots->append(  new nailSinField(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(new upRopeShot(this,  &shader_programs_, &textures_, &models_));
+    m_shots->append(new threeNailBalls(this,  &shader_programs_, &textures_, &models_));
+
+    //******* INTERCUT SEGMENTS
+    m_shots->append(  new twoNailBalls(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new PolarAnimated2(this, &shader_programs_, &textures_, &models_));
+    //*************************
+
    m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
 
+   //**** NOT YET MADE ORB SHOT(s)
 
- //  m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
+   //****************************
+
+
+
 
     m_shots->at(m_curShot)->begin();
     /****************************************/
@@ -293,6 +306,16 @@ void DrawEngine::realloc_framebuffers(int w,int h) {
     }
 }
 
+QString name(int num){
+    QString zeros("0000000000");
+    QString number = QString::number(num);
+    int length = number.length();
+    int zerolength = zeros.length();
+    zeros.resize(zerolength - length);;
+    QString toReturn(zeros + number);
+    return toReturn;
+}
+
 /**
   @paragraph Should render one frame at the given elapsed time in the program.
   Assumes that the GL context is valid when this method is called.
@@ -352,8 +375,9 @@ void DrawEngine::draw_frame(float time,int w,int h) {
 
     if (SAVE_SHOTS){
         QImage qi = m_widget->grabFrameBuffer(false);
-        QString fileName = "/home/jsatrian/Desktop/frames/frame" + QString::number(frameNumber);
-        qi.save(QFileInfo(fileName).absoluteDir().absolutePath() + "/" + QFileInfo(fileName).baseName() + ".png", "PNG", 100);
+        QString num = name(frameNumber);
+        QString fileName = "/home/jsatrian/Desktop/frames/" + num;
+        qi.save(QFileInfo(fileName).absoluteDir().absolutePath() + "/" + QFileInfo(fileName).baseName() + ".png", "PNG", 50);
         frameNumber++;
     }
 }
