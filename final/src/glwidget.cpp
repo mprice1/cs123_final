@@ -23,7 +23,7 @@ GLWidget::~GLWidget() {
 }
 
 void GLWidget::initializeGL() {
-    draw_engine_ = new DrawEngine(this->context(), this->width(), this->height());
+    draw_engine_ = new DrawEngine(this->context(), this->width(), this->height(), this);
     time_ = new QTime();
     timer_ = new QTimer(this);
     connect(timer_, SIGNAL(timeout()), this, SLOT(repaint()));

@@ -3,9 +3,9 @@
 #include <drawengine.h>
 #include <CS123Common.h>
 
-#define NUM_CLUSTERS 11
+#define NUM_CLUSTERS 12
 
-PolarClusters::PolarClusters(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL), m_shapes_lists(), m_locations()
+PolarClusters::PolarClusters(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL), m_shapes_lists(), m_locations(), m_ropes()
 {
     //lasts 150 frames
     m_lifespan = 890;
@@ -32,6 +32,7 @@ PolarClusters::~PolarClusters(){
     }
     delete ground;
     m_locations.clear();
+    m_ropes.clear();
     gluDeleteQuadric(m_quadric);
 }
 extern "C"{
@@ -127,6 +128,32 @@ void PolarClusters::begin(){
     temp->clear();
     delete temp;
 
+    l = m_shapes_lists.at(11);
+    Shapes s;
+    s.shape = 0;
+    s.t.y = -350;
+    s.t.x = 15;
+    l->append(s);
+    Shapes s2;
+    s2.shape = 0;
+    s2.t.y = -360;
+    s2.t.x = 5;
+    l->append(s2);
+
+    rope r = makeRopeLine(Vector4(s.t.x,s.t.y,-.1,1),Vector4(s2.t.x,s2.t.y,-.1,1),.5,100);
+    m_ropes.append(r);
+
+    s.shape = 0;
+    s.t.y = -570;
+    s.t.x = -15;
+    l->append(s);
+    s2.shape = 0;
+    s2.t.y = -570;
+    s2.t.x = -20;
+    l->append(s2);
+
+    r = makeRopeLine(Vector4(s.t.x,s.t.y,-.1,1),Vector4(s2.t.x,s2.t.y,-.1,1),.5,70);
+    m_ropes.append(r);
 
     Translation t;
     m_locations.append(t);
@@ -171,6 +198,9 @@ void PolarClusters::begin(){
     t.x = 0;
     t.y = -1030;
     m_locations[10] = t;
+    t.x = 0;
+    t.y = 0;
+    m_locations[11] = t;
 
 
 
@@ -268,35 +298,37 @@ shader_programs_->value(CRACK_SHADER)->release();
 
     shader_programs_->value(NAIL_SHADER)->release();
 
-//     glActiveTexture(GL_TEXTURE0);
-//     glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
-//     shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
 
-//     glActiveTexture(GL_TEXTURE1);
-//     glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_NORM));
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
 
-//     shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_NORM));
 
-
-//     //shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
-//     shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
-//     shader_programs_->value(ROPE_SHADER)->bind();
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",1);
 
 
-//     float wtf=25;
-//    for (int i = 0; i < m_ropes->length(); i++){
-//        glPushMatrix();
-//        glScaled(wtf,wtf,wtf);
+    //shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
+    shader_programs_->value(ROPE_SHADER)->bind();
 
-//        rope r = m_ropes->at(i);
 
-//        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-//        drawRope(r,true);
+    //float wtf=25;
+   for (int i = 0; i < m_ropes.length(); i++){
+       glPushMatrix();
+       //glScaled(wtf,wtf,wtf);
 
-//        glPopMatrix();
-//    }
+       rope r = m_ropes.at(i);
 
-//    shader_programs_->value(ROPE_SHADER)->release();
+       //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+       drawRope(r,true);
+
+       glPopMatrix();
+   }
+
+   shader_programs_->value(ROPE_SHADER)->release();
+
 
     glPopMatrix();
     glPopMatrix();
