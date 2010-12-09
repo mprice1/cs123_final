@@ -33,10 +33,13 @@
 #include <upropeshot.h>
 #include <polarclusters.h>
 #include <threenailballs.h>
+<<<<<<< HEAD:final/src/drawengine.cpp
 #include <QFileDialog>
-#include <twonailballs.h>
 
 #define SAVE_SHOTS 0
+=======
+#include <twonailballs.h>
+>>>>>>> 0fb216795c25f85978be87c09a4f9eed7c31f3bf:final/src/drawengine.cpp
 
 /*
  Common shader and texture names are defined as constants
