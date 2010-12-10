@@ -9,7 +9,7 @@ nailSinField::nailSinField(DrawEngine* parent,QHash<QString, QGLShaderProgram *>
     m_shapes = new QList<Shapes>();
     nm_plane = new NMPlane(30,50);
 
-    myrope = makeRopeLine(Vector4(0,0,0,1),Vector4(0,-10,0,1),.05,0.5);
+    myrope = makeRopeLine(Vector4(0,0,0,1),Vector4(0,-20,0,1),.05,0.5);
 }
 
 nailSinField::~nailSinField()
@@ -152,7 +152,7 @@ shader_programs_->value(CRACK_SHADER)->release();
     //DRAW ROPE
     //ROPE
     glPushMatrix();
-        glTranslatef(6,10,-2);
+        glTranslatef(6,20,-2);
         drawRope(myrope,true);
     glPopMatrix();
 

@@ -7,6 +7,7 @@
 #include <qgl.h>
 #include "glm.h"
 #include "common.h"
+#include "glwidget.h"
 
 /*
  Common shader and texture names are defined as constants
@@ -38,7 +39,7 @@ class DrawEngine {
 public:
 
     //ctor and dtor
-    DrawEngine(const QGLContext *context, int w, int h);
+    DrawEngine(const QGLContext *context, int w, int h, GLWidget* widget);
     ~DrawEngine();
 
     //methods
@@ -70,6 +71,8 @@ protected:
     GLuint load_texture(QFile * tex);
     void create_fbos(int w, int h);
     int m_w, m_h;
+    GLWidget* m_widget;
+    int frameNumber;
 
 
 

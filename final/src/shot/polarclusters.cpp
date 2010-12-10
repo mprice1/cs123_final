@@ -3,9 +3,10 @@
 #include <drawengine.h>
 #include <CS123Common.h>
 
-#define NUM_CLUSTERS 11
+#define NUM_CLUSTERS 12
+#define wtf .1
 
-PolarClusters::PolarClusters(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL), m_shapes_lists(), m_locations()
+PolarClusters::PolarClusters(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL), m_shapes_lists(), m_locations(), m_ropes()
 {
     //lasts 150 frames
     m_lifespan = 890;
@@ -32,6 +33,7 @@ PolarClusters::~PolarClusters(){
     }
     delete ground;
     m_locations.clear();
+    m_ropes.clear();
     gluDeleteQuadric(m_quadric);
 }
 extern "C"{
@@ -127,6 +129,38 @@ void PolarClusters::begin(){
     temp->clear();
     delete temp;
 
+    l = m_shapes_lists.at(11);
+    Shapes s;
+    s.shape = 0;
+    s.t.y = -350;
+    s.t.x = 15;
+    s.t.z = 0;
+    l->append(s);
+    Shapes s2;
+    s2.shape = 0;
+    s2.t.y = -360;
+    s2.t.x = 5;
+    s2.t.z = 0;
+    l->append(s2);
+
+    rope r = makeRopeLine(Vector4(wtf * s.t.x,wtf * s.t.y,-.1,1),Vector4(wtf * s2.t.x,wtf * s2.t.y,-.1,1),.5 * wtf,100 * wtf * wtf);
+    m_ropes.append(r);
+
+    Shapes s3;
+    s3.shape = 0;
+    s3.t.y = -570;
+    s3.t.x = -15;
+    s3.t.z = 0;
+    l->append(s3);
+    Shapes s4;
+    s4.shape = 0;
+    s4.t.y = -570;
+    s4.t.x = -20;
+    s4.t.z = 0;
+    l->append(s4);
+
+    r = makeRopeLine(Vector4(wtf * s3.t.x,wtf * s3.t.y,-.1,1),Vector4(wtf * s4.t.x,wtf * s4.t.y,-.1,1),.5 * wtf,20 * wtf * wtf);
+    m_ropes.append(r);
 
     Translation t;
     m_locations.append(t);
@@ -171,6 +205,9 @@ void PolarClusters::begin(){
     t.x = 0;
     t.y = -1030;
     m_locations[10] = t;
+    t.x = 0;
+    t.y = 0;
+    m_locations[11] = t;
 
 
 
@@ -240,7 +277,7 @@ shader_programs_->value(CRACK_SHADER)->release();
         QList<Shapes>* l = m_shapes_lists.at(i);
         Translation t = m_locations.at(i);
         glPushMatrix();
-        glTranslated(t.x,t.y,t.z);
+        glTranslated(t.x,t.y,0);
 
         for(int j = 0; j < l->length(); j++){
             Shapes s = l->at(j);
@@ -268,35 +305,37 @@ shader_programs_->value(CRACK_SHADER)->release();
 
     shader_programs_->value(NAIL_SHADER)->release();
 
-//     glActiveTexture(GL_TEXTURE0);
-//     glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
-//     shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
 
-//     glActiveTexture(GL_TEXTURE1);
-//     glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_NORM));
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
 
-//     shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_NORM));
 
-
-//     //shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
-//     shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
-//     shader_programs_->value(ROPE_SHADER)->bind();
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("normalmap",1);
 
 
-//     float wtf=25;
-//    for (int i = 0; i < m_ropes->length(); i++){
-//        glPushMatrix();
-//        glScaled(wtf,wtf,wtf);
+    //shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
+    shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
+    shader_programs_->value(ROPE_SHADER)->bind();
 
-//        rope r = m_ropes->at(i);
 
-//        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-//        drawRope(r,true);
+    //float wtf=25;
+   for (int i = 0; i < m_ropes.length(); i++){
+       glPushMatrix();
+       glScaled(1/((double) wtf),1/((double) wtf),1/((double) wtf));
 
-//        glPopMatrix();
-//    }
+       rope r = m_ropes.at(i);
 
-//    shader_programs_->value(ROPE_SHADER)->release();
+       //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+       drawRope(r,true);
+
+       glPopMatrix();
+   }
+
+   shader_programs_->value(ROPE_SHADER)->release();
+
 
     glPopMatrix();
     glPopMatrix();

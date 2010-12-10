@@ -6,7 +6,7 @@
 PolarAnimated2::PolarAnimated2(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL)
 {
     //lasts 150 frames
-    m_lifespan = 150000;
+    m_lifespan = 400;
     //m_increment = 0;
     //mFPS = 30;
     m_framecount = 0;
@@ -37,7 +37,12 @@ void PolarAnimated2::update(){
 
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+    //cout <<m_framecount<<endl;
 
+    if(m_framecount>=m_lifespan)
+    {
+        m_engine->endShot();
+    }
 }
 
 void PolarAnimated2::begin(){

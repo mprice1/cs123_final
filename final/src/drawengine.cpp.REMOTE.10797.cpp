@@ -27,16 +27,6 @@
 #include <spiralorbshot.h>
 #include <tempshot.h>
 #include <intronailshot.h>
-#include <polaranimated.h>
-#include <polaranimated2.h>
-#include <nailsinfield.h>
-#include <upropeshot.h>
-#include <polarclusters.h>
-#include <threenailballs.h>
-#include <QFileDialog>
-#include <twonailballs.h>
-
-#define SAVE_SHOTS 0
 
 /*
  Common shader and texture names are defined as constants
@@ -63,7 +53,7 @@ extern "C"{
   @param h The viewport heigh used to alloacte the correct framebuffer size.
 
 **/
-DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) : context_(context) {
+DrawEngine::DrawEngine(const QGLContext *context,int w,int h) : context_(context) {
     //initialize ogl settings
     glEnable(GL_TEXTURE_2D);
     glFrontFace(GL_CCW);
@@ -99,34 +89,15 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
     m_shots = new QList<Shot*>();
     m_curShot =0;
 
-    frameNumber = 0;
-    m_widget = widget;
-
-
-    //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
 
     //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
-
     m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
-    m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
-    m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
-    m_shots->append(  new nailSinField(this, &shader_programs_, &textures_, &models_));
-    m_shots->append(new upRopeShot(this,  &shader_programs_, &textures_, &models_));
-    m_shots->append(new threeNailBalls(this,  &shader_programs_, &textures_, &models_));
-
-    //******* INTERCUT SEGMENTS
-    m_shots->append(  new twoNailBalls(this, &shader_programs_, &textures_, &models_));
-    m_shots->append(  new PolarAnimated2(this, &shader_programs_, &textures_, &models_));
-    //*************************
-
-   m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
-
-   //**** NOT YET MADE ORB SHOT(s)
-
-   //****************************
 
 
+   // m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
+//    m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
 
+ //  m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
 
     m_shots->at(m_curShot)->begin();
     /****************************************/
@@ -306,16 +277,6 @@ void DrawEngine::realloc_framebuffers(int w,int h) {
     }
 }
 
-QString name(int num){
-    QString zeros("0000000000");
-    QString number = QString::number(num);
-    int length = number.length();
-    int zerolength = zeros.length();
-    zeros.resize(zerolength - length);;
-    QString toReturn(zeros + number);
-    return toReturn;
-}
-
 /**
   @paragraph Should render one frame at the given elapsed time in the program.
   Assumes that the GL context is valid when this method is called.
@@ -329,8 +290,6 @@ QString name(int num){
 **/
 void DrawEngine::draw_frame(float time,int w,int h) {
     fps_ = 1000.f / (time - previous_time_),previous_time_ = time;
-    m_w = w;
-    m_h = h;
     //Render the scene to a framebuffer
     //framebuffer_objects_["fbo_0"]->bind();
     perspective_camera(w,h);    
@@ -372,29 +331,10 @@ void DrawEngine::draw_frame(float time,int w,int h) {
 
     m_shots->at(m_curShot)->update();
     m_shots->at(m_curShot)->draw();
-
-    if (SAVE_SHOTS){
-        QImage qi = m_widget->grabFrameBuffer(false);
-        QString num = name(frameNumber);
-        QString fileName = "/home/jsatrian/Desktop/frames/" + num;
-        qi.save(QFileInfo(fileName).absoluteDir().absolutePath() + "/" + QFileInfo(fileName).baseName() + ".png", "PNG", 50);
-        frameNumber++;
-    }
 }
 
 void DrawEngine::endShot()
 {
-    /**
-      RESET THE FUCKING CAMERA
-    **/
-    camera_.center.x = 0.f,camera_.center.y = 0.f,camera_.center.z = 0.f;
-    camera_.eye.x = 0.f,camera_.eye.y = 0.0f,camera_.eye.z = 2.f;
-    camera_.up.x = 0.f,camera_.up.y = 1.f,camera_.up.z = 0.f;
-    camera_.near = 0.1f,camera_.far = 100.f;
-    camera_.fovy = 60.f;
-    /**  OKAY? **/
-
-
     if(m_curShot>=m_shots->size()-1)
     {
     //some sort of end action...
@@ -448,20 +388,6 @@ void DrawEngine::textured_quad(int w,int h,bool flip) {
 
 **/
 void DrawEngine::perspective_camera(int w,int h) {
-    float ratio = w / static_cast<float>(h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(camera_.fovy,ratio,camera_.near,camera_.far);
-    gluLookAt(camera_.eye.x,camera_.eye.y,camera_.eye.z,
-              camera_.center.x,camera_.center.y,camera_.center.z,
-              camera_.up.x,camera_.up.y,camera_.up.z);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
-
-void DrawEngine::perspective_camera() {
-    int w= m_w;
-    int h = m_h;
     float ratio = w / static_cast<float>(h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
