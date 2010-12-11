@@ -106,7 +106,7 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
 
     m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
-   // m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
     m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
     m_shots->append(  new nailSinField(this, &shader_programs_, &textures_, &models_));
