@@ -7,6 +7,9 @@
 introNailShot::introNailShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
 {
     m_lifespan = 1050;
+    //m_lifespan = 200;
+
+    m_fadespan = 50;
 
     //CREATE GROUND PLANE
     nm_plane = new NMPlane(20,40);
@@ -50,9 +53,18 @@ void introNailShot::begin()
 void introNailShot::update()
 {
     m_framesElapsed++;
+
+
     if(m_framesElapsed>= m_lifespan)
     {
         m_engine->endShot();
+    }
+
+    int frames = m_lifespan - m_fadespan;
+
+    if(m_framesElapsed == frames)
+    {
+        m_engine->fadeShots(m_lifespan - frames);
     }
 }
 
