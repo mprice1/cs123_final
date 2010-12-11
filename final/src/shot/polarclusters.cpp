@@ -238,7 +238,7 @@ void PolarClusters::draw(){
     double speed = framecount / 8;
     //speed = MIN(speed, framecount / 5);
 
-    glTranslated(0,0,speed);
+    glTranslated(0,0,12+speed);
 
     glPushMatrix();
     glTranslatef(0,-.5,100);

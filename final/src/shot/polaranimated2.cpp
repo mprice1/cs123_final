@@ -6,7 +6,7 @@
 PolarAnimated2::PolarAnimated2(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex, mod), m_quadric(NULL)
 {
     //lasts 150 frames
-    m_lifespan = 400;
+    m_lifespan = 700;
     //m_increment = 0;
     //mFPS = 30;
     m_framecount = 0;
@@ -42,6 +42,10 @@ void PolarAnimated2::update(){
     if(m_framecount>=m_lifespan)
     {
         m_engine->endShot();
+    }
+    if((int)m_framecount % 150 == 0)
+    {
+        m_engine->prevShot();
     }
 }
 
@@ -109,7 +113,7 @@ void PolarAnimated2::draw(){
 
     m_framecount++;
 
-    double framecount = m_framecount * .3;
+    double framecount = m_framecount * .15;
 
     glPushMatrix();
     glRotated(framecount * 1.5,0,1,0);

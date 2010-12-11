@@ -43,6 +43,10 @@ void twoNailBalls::update()
     {
         m_engine->endShot();
     }
+    if(m_framesElapsed%150 == 0)
+    {
+        m_engine->endShot();
+    }
 
     //ANIMATE OUR SHIT!!!
     p1.x += 0.005;

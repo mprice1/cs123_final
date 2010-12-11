@@ -3,14 +3,14 @@ varying vec3 normal, lightDir, r;
 varying float eyedist;
 void main (void)
 {
-	vec4 final_color = textureCube( CubeMap, r);
+	vec4 final_color = mix(textureCube( CubeMap, r),vec4(0.25,0.1,0.4,1),0.1);
 	vec3 N = normalize(normal);
 	vec3 L = normalize(lightDir);
 	float lambertTerm = dot(N,L);
 	if(lambertTerm > 0.0)
 	{
 		// Specular
-		final_color += textureCube( CubeMap, r);
+		final_color += mix(textureCube( CubeMap, r),vec4(0.1,0.2,0.4,1), 0.1);
 	}
 	//gl_FragColor = final_color ;
 

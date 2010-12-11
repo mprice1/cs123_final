@@ -35,6 +35,8 @@
 #include <threenailballs.h>
 #include <QFileDialog>
 #include <twonailballs.h>
+#include <manynailballs.h>
+#include <particleorbs.h>
 
 #define SAVE_SHOTS 0
 
@@ -102,12 +104,9 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
     frameNumber = 0;
     m_widget = widget;
 
-
+    m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
-
-    //m_shots->append(  new testShot(this, &shader_programs_, &textures_, &models_));
-
-    m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
+   // m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
     m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
     m_shots->append(  new nailSinField(this, &shader_programs_, &textures_, &models_));
@@ -119,10 +118,11 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
     m_shots->append(  new PolarAnimated2(this, &shader_programs_, &textures_, &models_));
     //*************************
 
-   m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new spiralOrbShot(this, &shader_programs_, &textures_, &models_));
 
    //**** NOT YET MADE ORB SHOT(s)
-
+    m_shots->append(  new OrbShot(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new manyNailBalls(this, &shader_programs_, &textures_, &models_));
    //****************************
 
 
@@ -258,12 +258,16 @@ void DrawEngine::load_textures() {
     fileList.append(new QFile("textures/astra/negy.jpg"));
     fileList.append(new QFile("textures/astra/posz.jpg"));
     fileList.append(new QFile("textures/astra/negz.jpg"));
+
     textures_["cube_map_1"] = load_cube_map(fileList);
 
     textures_["rope_occlusion"] = load_texture(new QFile("textures/ropeOcc.png"));
     textures_["rope_normal"] = load_texture(new QFile("textures/ropeNorm2.png"));
     textures_[CRACK_COLOR] = load_texture(new QFile("textures/crackColor.png"));
     textures_[CRACK_NORM] = load_texture(new QFile("textures/crackNorm.png"));
+
+    textures_[SPRITE_ONE] = load_texture(new QFile("textures/sprt.png"));
+    textures_[SPRITE_TWO] = load_texture(new QFile("textures/sprt2.png"));
 
 }
 /**
@@ -380,6 +384,8 @@ void DrawEngine::draw_frame(float time,int w,int h) {
         qi.save(QFileInfo(fileName).absoluteDir().absolutePath() + "/" + QFileInfo(fileName).baseName() + ".png", "PNG", 50);
         frameNumber++;
     }
+
+
 }
 
 void DrawEngine::endShot()
@@ -402,6 +408,51 @@ void DrawEngine::endShot()
     else
     {
         m_curShot++;
+        m_shots->at(m_curShot)->begin();
+    }
+}
+
+/**
+void GLWidget::render_text() {
+    glColor3f(1.f, 1.f, 1.f);
+    QFont f("Deja Vu Sans Mono", 8, 4, false);
+    float fps =  draw_engine_->fps();
+    if (fps >= 0 && fps < 1000) {
+       prev_fps_ *= 0.95;
+       prev_fps_ += draw_engine_->fps() * 0.05;
+
+    } this->renderText(10.0, 20.0, "FPS: " + QString::number((int)(prev_fps_)), f);
+    this->renderText(10.0, 35.0, "S: Save screenshot", f);
+}
+  **/
+
+void DrawEngine::text(double x, double y, QString s)
+{
+   // QFont f("Deja Vu Sans Mono", 8, 4, false);
+    glColor3f(1.f, 0.f, 0.f);
+    m_widget->renderText(x,y,0.0,"WTTTFFF");
+}
+
+void DrawEngine::prevShot()
+{
+    /**
+      RESET THE FUCKING CAMERA
+    **/
+    camera_.center.x = 0.f,camera_.center.y = 0.f,camera_.center.z = 0.f;
+    camera_.eye.x = 0.f,camera_.eye.y = 0.0f,camera_.eye.z = 2.f;
+    camera_.up.x = 0.f,camera_.up.y = 1.f,camera_.up.z = 0.f;
+    camera_.near = 0.1f,camera_.far = 100.f;
+    camera_.fovy = 60.f;
+    /**  OKAY? **/
+
+
+    if(m_curShot==0)
+    {
+    //some sort of end action...
+    }
+    else
+    {
+        m_curShot--;
         m_shots->at(m_curShot)->begin();
     }
 }

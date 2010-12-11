@@ -6,6 +6,49 @@
 
 OrbShot::OrbShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
 {
+    m_lifespan = 350;
+
+    //make nailvecs and ropes
+    numNails = 9;
+    numRopes = 12;
+    numBrads = 3;
+
+    nlist = new Vector4[numNails];
+    rlist = new rope[numRopes];
+    blist = new Vector4[numBrads];
+
+    //Vector encoding: (ry, rz, dy, sc)
+    nlist[0] = Vector4(15, 45, 1.25, 0.5);
+    nlist[1] = Vector4(180, 135, 1.25, 0.5);
+    nlist[2] = Vector4(-30, 15, 1.25, 0.5);
+    nlist[3] = Vector4(90, 70, 1.15, 0.5);
+
+    nlist[4] = Vector4(0,180,1.25,0.5);
+    nlist[5] = Vector4(0,90,1.25,0.4);
+    nlist[6] = Vector4(90,90,1.25,0.45);
+    nlist[7] = Vector4(180,90,1.25,0.5);
+    nlist[8] = Vector4(270,90,1.25,0.55);
+
+    blist[0] = Vector4(45,30,1.25,0.5);
+    blist[1] = Vector4(-15, 115, 1.25, 0.5);
+    blist[2] = Vector4(-60,35,1.25,0.5);
+
+    rlist[0] = ropeFromNailVecs(nlist[2],nlist[1],.04,0.4);
+    rlist[1] = ropeFromNailVecs(nlist[2],nlist[3],.05,5.0);
+
+    rlist[2] = ropeFromNailVecs(nlist[1],nlist[2],.05,0.5);
+    rlist[3] = ropeFromNailVecs(nlist[1],nlist[5],.05,0.5);
+
+    rlist[4] = ropeFromNailVecs(nlist[4],nlist[5],.05,0.5);
+    rlist[5] = ropeFromNailVecs(nlist[4],nlist[6],.05,0.55);
+    rlist[6] = ropeFromNailVecs(nlist[4],nlist[7],.05,0.49);
+    rlist[7] = ropeFromNailVecs(nlist[4],nlist[8],.05,0.6);
+
+    rlist[8] = ropeFromNailVecs(nlist[5],nlist[6],.05,0.6);
+    rlist[9] = ropeFromNailVecs(nlist[6],nlist[7],.05,0.6);
+    rlist[10] = ropeFromNailVecs(nlist[7],nlist[8],.05,0.6);
+    rlist[11] = ropeFromNailVecs(nlist[8],nlist[5],.05,0.6);
+
 }
 
 void OrbShot::begin()
@@ -24,13 +67,19 @@ void OrbShot::begin()
     lightpos[3]=0.f;
 
     glLightfv(GL_LIGHT0,GL_POSITION,lightpos);
+
+    m_engine->camera_.eye.z += 1;
 }
 
 
 void OrbShot::update()
 {
-    m_framesElapsed++;
+    m_engine->camera_.eye.z += 1.0 / m_lifespan;
 
+    m_framesElapsed++;
+    if(m_framesElapsed >= m_lifespan)
+    {//  m_engine->endShot();
+    }
 }
 
 
@@ -43,17 +92,25 @@ glEnable(GL_DEPTH_TEST);
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 
-//sphere
-drawSphere();
+glPushMatrix();
+glTranslatef(sin(m_framesElapsed*0.01),0,0);
+//glRotatef(60,1,0,0);
+glRotatef(m_framesElapsed,0,1,0);
 
-glTranslatef(5,0,0);
+//sphere
+glPushMatrix();
+glScalef(2,2,2);
 drawSphere();
+glPopMatrix();
+/*
+glTranslatef(5,0,0);
+drawSphere();*/
 
 
 /*
  BEFORE ROPES
  */
-shader_programs_->value(ROPE_SHADER)->bind();
+  shader_programs_->value(ROPE_SHADER)->bind();
  glActiveTexture(GL_TEXTURE0);
  glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
  shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
@@ -73,7 +130,6 @@ rope myrope = makeRopeLine(Vector4(0.0,0.7,0.0,1),Vector4(0.5,0.5,0,1), .025, 0.
 
 //nails
 shader_programs_->value(ROPE_SHADER)->release();
-
 glActiveTexture(GL_TEXTURE0);
 glBindTexture(GL_TEXTURE_CUBE_MAP, textures_->value("cube_map_1"));
 shader_programs_->value(NAIL_SHADER)->bind();
@@ -82,35 +138,20 @@ shader_programs_->value(NAIL_SHADER)->setUniformValue("eyept",m_engine->camera_.
 //*****
 //float ry, rz, dy, sc;
 
-Vector4 nail1 = Vector4(    0,  m_framesElapsed%360,  1,    .5);
-Vector4 nail2 = Vector4(    45.0, m_framesElapsed%360,    1,    .5);
-//drawNailFromVec(nail1);
-//drawNailFromVec(nail2);
-rope r = ropeFromNailVecs(nail1,nail2,.05,.5);
 
-int n =10;
-Vector4 nlist[n];
-rope rlist[n-1];
 
-for(int i=0; i<n; i++)
+for(int i=0; i<numNails; i++)
 {
-    float ry,rz,dy,sc;
-    ry = i * 360.0/((float)n);
-    rz = ry/2;
-    dy = 0.7;
-    sc = .25;
-
-    nlist[i] = Vector4(ry,rz,dy,sc);
-    if(i!=0)
-    {
-        rlist[i-1]= ropeFromNailVecs(nlist[i-1],nlist[i],.05,.4);
-    }
-
     drawNailFromVec(nlist[i]);
+}
+for(int i=0; i<numBrads; i++)
+{
+    drawNailFromVec(blist[i],true);
 }
 
 
-shader_programs_->value(ROPE_SHADER)->bind();
+
+ shader_programs_->value(ROPE_SHADER)->bind();
  glActiveTexture(GL_TEXTURE0);
  glBindTexture(GL_TEXTURE_2D,textures_->value(ROPE_OCC));
  shader_programs_->value(ROPE_SHADER)->setUniformValue("colormap",0);
@@ -123,17 +164,39 @@ shader_programs_->value(ROPE_SHADER)->bind();
  shader_programs_->value(ROPE_SHADER)->setUniformValue("sag",(GLfloat)(0.5 + 0.01*(m_framesElapsed%100)));
  shader_programs_->value(ROPE_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
- for(int i =0; i<n-1; i++)
+ for(int i =0; i<numRopes; i++)
  {
      drawRope(rlist[i],true);
  }
 
 
-//.75 is the golden number for nail attatchment?
-
 
 
 glPopMatrix();
+
+shader_programs_->value(ROPE_SHADER)->release();
+glActiveTexture(GL_TEXTURE0);
+glBindTexture(GL_TEXTURE_CUBE_MAP, textures_->value("cube_map_1"));
+shader_programs_->value(NAIL_SHADER)->bind();
+shader_programs_->value(NAIL_SHADER)->setUniformValue("CubeMap",GL_TEXTURE0);
+shader_programs_->value(NAIL_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
+
+
+
+
+glPushMatrix();
+glTranslatef(2 * sin(m_framesElapsed*.045),-1.5 * cos(m_framesElapsed*.05), 2*sin(m_framesElapsed*.05));
+glRotatef(m_framesElapsed,1,0,0);
+glPushMatrix();
+glScalef(.3,.3,.3);
+drawNailBall();
+glPopMatrix();
+drawSphere();
+glPopMatrix();
+
+
+
+
 
 }
 
@@ -175,7 +238,7 @@ pt2.x = -pt2.x;
 
 }
 
-void OrbShot::drawNailFromVec(Vector4 nv)
+void OrbShot::drawNailFromVec(Vector4 nv, bool usebrad)
 {
     //VECTOR ENCODED LIKE SO:  ry rz dy sc
     glPushMatrix();
@@ -183,6 +246,9 @@ void OrbShot::drawNailFromVec(Vector4 nv)
     glRotatef(nv.y,0,0,1);
     glTranslatef(0,nv.z,0);
     glScalef(nv.w,nv.w,nv.w);
-    glCallList(models_->value(NAIL_MODEL).idx);
+    if(usebrad)
+        glCallList(models_->value(BRAD_MODEL).idx);
+    else
+        glCallList(models_->value(NAIL_MODEL).idx);
     glPopMatrix();
 }

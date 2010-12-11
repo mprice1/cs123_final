@@ -25,6 +25,9 @@
 #define CRACK_COLOR "crackcolor"
 #define CRACK_NORM "cracknormal"
 
+#define SPRITE_ONE "sprite_one"
+#define SPRITE_TWO "sprite_two"
+
 
 class QGLContext;
 class QGLShaderProgram;
@@ -53,6 +56,10 @@ public:
 
     void perspective_camera();
     void endShot();
+    void prevShot();
+
+
+    void text(double x, double y, QString s);
 
     //member variables
     Camera                                      camera_; ///a simple camera struct

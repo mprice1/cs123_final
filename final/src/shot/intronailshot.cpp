@@ -6,7 +6,7 @@
 
 introNailShot::introNailShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
 {
-    m_lifespan = 1200;
+    m_lifespan = 1050;
 
     //CREATE GROUND PLANE
     nm_plane = new NMPlane(20,40);
@@ -16,7 +16,7 @@ introNailShot::introNailShot(DrawEngine* parent,QHash<QString, QGLShaderProgram 
 
     //world pt 1:  12,0,0.5
     //world pt 2:  15,0,0.5
-    r2 = makeRopeLine(Vector4(16,0.3,1.4,1.0), Vector4(19,0.3,1.4,1.0),.1,15);
+    r2 = makeRopeLine(Vector4(16,0.3,1.35,1.0), Vector4(19,0.3,1.4,1.0),.1,15);
 }
 
 introNailShot::~introNailShot()
@@ -41,7 +41,7 @@ void introNailShot::begin()
 
     glLightfv(GL_LIGHT0,GL_POSITION,lightpos);
 
-    m_engine->camera_.eye.y += 0.5;
+    m_engine->camera_.eye.y += 0.6;
     m_engine->perspective_camera();
 
 }
