@@ -78,7 +78,7 @@ void OrbShot::update()
 
     m_framesElapsed++;
     if(m_framesElapsed >= m_lifespan)
-    {//  m_engine->endShot();
+    {  m_engine->endShot();
     }
 }
 

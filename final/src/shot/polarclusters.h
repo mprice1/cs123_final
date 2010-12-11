@@ -24,7 +24,7 @@ private:
     double m_framecount;
     QList<QList<Shapes>*> m_shapes_lists;
     QList<Translation> m_locations;
-    QList<rope> m_ropes;
+//    QList<rope> m_ropes;
 
     NMPlane* ground;
 

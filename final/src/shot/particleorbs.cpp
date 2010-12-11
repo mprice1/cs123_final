@@ -1,23 +1,74 @@
 #include "particleorbs.h"
 #include "drawengine.h"
 
+#define RADIUS 5
 
 particleOrbs::particleOrbs(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot (parent,shad,tex,mod)
     {
     force = 0.2;
-    numParticles = 25;
+    numParticles = 500;
     particles = new particle[numParticles];
-    //srand(time(NULL));
+    srand(time(NULL));
     //init particles
         for(int i=0; i<numParticles; i++)
         {
-            float x,y,z;
-            particles[i].pos = Vector4(0,0,0,1);
+            float xp,yp,zp;
+            xp = (double) rand() / (double) RAND_MAX;
+            xp *= 2;
+            xp -= 1;
+            xp *= RADIUS;
+
+#if 1
+            yp = (double) rand() / (double) RAND_MAX;
+            yp *= 2;
+            yp -= 1;
+            yp *= RADIUS;
+
+            zp = RADIUS * RADIUS - xp * xp - yp * yp;
+            zp = sqrt(zp);
+
+
+            int neg = rand() % 2;
+            if (neg)
+                zp = -1 * zp;
+
+            particles[i].pos = Vector4(xp,yp,zp,1);
+
+#else
+            yp = RADIUS * RADIUS - xp * xp;
+            yp = sqrt(yp);
+
+
+
+            int neg = rand() % 2;
+            if (neg)
+                yp = -1 * yp;
+
+            particles[i].pos = Vector4(xp,yp,0,1);
+
+#endif
+
+            //float x,y,z;
             particles[i].acc = Vector4(0,0,0,0);
-            x = random() % 1000 / 100.0;
-            y = random() % 1000 / 100.0;
-            z = random() % 1000 / 100.0;
-            particles[i].dir = Vector4(x,y,0,0);
+//            x = (double) rand() / (double) RAND_MAX;
+//            x *= 2;
+//            x -= 1;
+//            x *= 5;
+//            y = (double) rand() / (double) RAND_MAX;
+//            y *= 2;
+//            y -= 1;
+//            y *= 5;
+//            z = (double) rand() / (double) RAND_MAX;
+//            z *= 2;
+//            z -= 1;
+//            z *= 5;
+            float t = 100;
+            int neg2 = rand() % 2;
+            if (neg2){
+                yp = -1 * yp;
+                xp = -1 * xp;
+            }
+            particles[i].dir = Vector4(-t * yp,t * xp,0,0);
         }
 
     }
@@ -60,9 +111,11 @@ m_framesElapsed++;
 
 for(int i=0; i<numParticles; i++)
 {
-    particles[i].pos += particles[i].dir * .001;
+    particle& p = particles[i];
+   particles[i].pos += particles[i].dir * .001;
     particles[i].dir += particles[i].acc;
-   // particles[i].acc -=    (particles[i].pos - Vector4(0,0,0,1));
+    Vector4 rad = Vector4(0,0,0,1) - particles[i].pos;
+    particles[i].acc =    10.0 * rad.getNormalized();
 }
 
 
@@ -80,8 +133,8 @@ void particleOrbs::draw()
     glEnable(GL_TEXTURE_2D);
     //glEnable(GL_ALPHA_TEST);
     glEnable(GL_BLEND);
-    glDisable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA_SATURATE,GL_ONE);
+    //glDisable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
     glBindTexture(GL_TEXTURE_2D,textures_->value(SPRITE_ONE));
     glBegin(GL_QUADS);
@@ -89,16 +142,16 @@ void particleOrbs::draw()
     float h = 1.0;
     for(int i=0; i<numParticles/2; i++)
     {
-        glTexCoord2f(0,0);
+        glTexCoord2f(0,1);
         glVertex3f(particles[i].pos.x,particles[i].pos.y,particles[i].pos.z);
 
-        glTexCoord2f(1,0);
+        glTexCoord2f(1,1);
         glVertex3f(particles[i].pos.x+h,particles[i].pos.y,particles[i].pos.z);
 
-        glTexCoord2f(1,1);
+        glTexCoord2f(1,0);
         glVertex3f(particles[i].pos.x+h,particles[i].pos.y+h,particles[i].pos.z);
 
-        glTexCoord2f(0,1);
+        glTexCoord2f(0,0);
         glVertex3f(particles[i].pos.x,particles[i].pos.y+h,particles[i].pos.z);
     }
     glEnd();
