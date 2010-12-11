@@ -6,7 +6,7 @@
 particleOrbs::particleOrbs(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot (parent,shad,tex,mod)
     {
     force = 0.2;
-    numParticles = 500;
+    numParticles = 600;
     particles = new particle[numParticles];
     srand(time(NULL));
     //init particles
@@ -62,7 +62,7 @@ particleOrbs::particleOrbs(DrawEngine* parent,QHash<QString, QGLShaderProgram *>
 //            z *= 2;
 //            z -= 1;
 //            z *= 5;
-            float t = 100;
+            float t = 75;
             int neg2 = rand() % 2;
             if (neg2){
                 yp = -1 * yp;
@@ -101,7 +101,7 @@ void particleOrbs::begin()
     //called every frame before draw.
 void particleOrbs::update()
 {
-    float clr = 0.8 - m_framesElapsed/1000.0;
+    float clr = 0.8 - m_framesElapsed/100.0;
     if(clr>0)
         glClearColor(clr,clr,clr,0.0f);
 m_framesElapsed++;
@@ -115,7 +115,7 @@ for(int i=0; i<numParticles; i++)
    particles[i].pos += particles[i].dir * .001;
     particles[i].dir += particles[i].acc;
     Vector4 rad = Vector4(0,0,0,1) - particles[i].pos;
-    particles[i].acc =    10.0 * rad.getNormalized();
+    particles[i].acc =    15.0 * rad.getNormalized();
 }
 
 
@@ -132,15 +132,22 @@ void particleOrbs::draw()
 
     glEnable(GL_TEXTURE_2D);
     //glEnable(GL_ALPHA_TEST);
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
     //glDisable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+  //  glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
+    //glBindTexture(GL_TEXTURE_2D,textures_->value(SPRITE_ONE));
+
+
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,textures_->value(SPRITE_ONE));
-    glBegin(GL_QUADS);
+    shader_programs_->value(SPRITE_SHADER)->bind();
+    shader_programs_->value(SPRITE_SHADER)->setUniformValue("colormap",0);
 
-    float h = 1.0;
-    for(int i=0; i<numParticles/2; i++)
+
+    glBegin(GL_QUADS);
+    float h = .8;
+    for(int i=0; i<numParticles/4; i++)
     {
         glTexCoord2f(0,1);
         glVertex3f(particles[i].pos.x,particles[i].pos.y,particles[i].pos.z);
@@ -149,16 +156,16 @@ void particleOrbs::draw()
         glVertex3f(particles[i].pos.x+h,particles[i].pos.y,particles[i].pos.z);
 
         glTexCoord2f(1,0);
-        glVertex3f(particles[i].pos.x+h,particles[i].pos.y+h,particles[i].pos.z);
+        glVertex3f(particles[i].pos.x+h,particles[i].pos.y+(h*1.5),particles[i].pos.z);
 
         glTexCoord2f(0,0);
-        glVertex3f(particles[i].pos.x,particles[i].pos.y+h,particles[i].pos.z);
+        glVertex3f(particles[i].pos.x,particles[i].pos.y+(h*1.5),particles[i].pos.z);
     }
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D,textures_->value(SPRITE_TWO));
     glBegin(GL_QUADS);
-    for(int i=numParticles/2; i<numParticles; i++)
+    for(int i=numParticles/4; i<numParticles/2; i++)
     {
         glTexCoord2f(0,0);
         glVertex3f(particles[i].pos.x,particles[i].pos.y,particles[i].pos.z);
@@ -167,12 +174,15 @@ void particleOrbs::draw()
         glVertex3f(particles[i].pos.x+h,particles[i].pos.y,particles[i].pos.z);
 
         glTexCoord2f(1,1);
-        glVertex3f(particles[i].pos.x+h,particles[i].pos.y+(h*1.5),particles[i].pos.z);
+        glVertex3f(particles[i].pos.x+h,particles[i].pos.y+(h),particles[i].pos.z);
 
         glTexCoord2f(0,1);
-        glVertex3f(particles[i].pos.x,particles[i].pos.y+(h*1.5),particles[i].pos.z);
+        glVertex3f(particles[i].pos.x,particles[i].pos.y+(h),particles[i].pos.z);
     }
     glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+
 
 
 
