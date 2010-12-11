@@ -84,7 +84,7 @@ void particleOrbs::begin()
 {
 
     glShadeModel(GL_SMOOTH);
-    glClearColor(0.8f,0.8f,0.8f,0.0f);
+    glClearColor(0.0f,0.0f,0.0f,0.0f);
         glEnable(GL_LIGHTING);
 
         //Make some lights!
@@ -101,9 +101,7 @@ void particleOrbs::begin()
     //called every frame before draw.
 void particleOrbs::update()
 {
-    float clr = 0.8 - m_framesElapsed/100.0;
-    if(clr>0)
-        glClearColor(clr,clr,clr,0.0f);
+
 m_framesElapsed++;
 
 

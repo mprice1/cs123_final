@@ -38,7 +38,7 @@
 #include <manynailballs.h>
 #include <particleorbs.h>
 
-#define SAVE_SHOTS 0
+#define SAVE_SHOTS 1
 
 /*
  Common shader and texture names are defined as constants
@@ -105,12 +105,8 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
     m_widget = widget;
     m_fadetimer = 0;
 
-<<<<<<< HEAD:final/src/drawengine.cpp
-
-=======
     //m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
->>>>>>> addb2c9cf951264e1b2d7d84e4036f5927ba6b87:final/src/drawengine.cpp
     m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
     m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
@@ -380,8 +376,8 @@ void DrawEngine::draw_frame(float time,int w,int h) {
     if (SAVE_SHOTS){
         QImage qi = m_widget->grabFrameBuffer(false);
         QString num = name(frameNumber);
-        QString fileName = "/home/jsatrian/Desktop/frames/" + num;
-        qi.save(QFileInfo(fileName).absoluteDir().absolutePath() + "/" + QFileInfo(fileName).baseName() + ".png", "PNG", 50);
+        QString fileName = "/ltmp/frames/frame" + num;
+        qi.save(QFileInfo(fileName).absoluteDir().absolutePath() + "/" + QFileInfo(fileName).baseName() + ".png", "PNG", 100);
         frameNumber++;
     }
 
