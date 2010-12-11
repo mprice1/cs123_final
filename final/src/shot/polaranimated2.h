@@ -32,6 +32,7 @@ private:
     QList<Shapes>* m_shapes;
     QList<Shapes>* m_shapes_ring;
     QList<rope>* m_ropes;
+    int m_fadespan;
     NMPlane* ground;
 
 };

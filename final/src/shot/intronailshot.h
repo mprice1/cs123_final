@@ -24,6 +24,8 @@ protected:
     rope r1;
     rope r2;
 
+    int m_fadespan;
+
 };
 
 #endif // INTRONAILSHOT_H

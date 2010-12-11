@@ -26,6 +26,7 @@ private:
     QList<Translation> m_locations;
 //    QList<rope> m_ropes;
 
+    int m_fadespan;
     NMPlane* ground;
 
 };

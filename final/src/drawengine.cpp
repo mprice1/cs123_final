@@ -103,8 +103,9 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
 
     frameNumber = 0;
     m_widget = widget;
+    m_fadetimer = 0;
 
-    m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
+    //m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
     m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
@@ -375,7 +376,47 @@ void DrawEngine::draw_frame(float time,int w,int h) {
 
 
     m_shots->at(m_curShot)->update();
+
     m_shots->at(m_curShot)->draw();
+
+    if (m_fadetimer > 0){
+
+        int distance = abs(m_fade - m_fadetimer);
+
+        double d = (double) distance / (double) m_fade;
+        d = 1 - d;
+
+        orthogonal_camera();
+
+
+        int w = m_w;
+        int h = m_h;
+
+        //    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+        //    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+        glDisable(GL_TEXTURE_2D);
+        glEnable(GL_COLOR_MATERIAL);
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(1,1,1,1 * d);
+        //cout << d << endl;
+        glBegin(GL_QUADS);
+        //glTexCoord2f(0.0f,flip ? 1.0f : 0.0f);
+        glVertex2f(0.0f,0.0f);
+        //glTexCoord2f(1.0f,flip ? 1.0f : 0.0f);
+        glVertex2f(w,0.0f);
+        //glTexCoord2f(1.0f,flip ? 0.0f : 1.0f);
+        glVertex2f(w,h);
+        //glTexCoord2f(0.0f,flip ? 0.0f : 1.0f);
+        glVertex2f(0.0f,h);
+        glEnd();
+        glDisable(GL_BLEND);
+        glDisable(GL_COLOR_MATERIAL);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
+        m_fadetimer--;
+    }
 
     if (SAVE_SHOTS){
         QImage qi = m_widget->grabFrameBuffer(false);
@@ -386,7 +427,27 @@ void DrawEngine::draw_frame(float time,int w,int h) {
     }
 
 
+
+
 }
+
+void DrawEngine::orthogonal_camera(){
+    int w = m_w;
+    int h = m_h;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,static_cast<float>(w),static_cast<float>(h),0.f,-1.f,1.f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void DrawEngine::fadeShots(int frames){
+
+    m_fadetimer = frames * 2;
+    m_fade = frames;
+}
+
+
 
 void DrawEngine::endShot()
 {

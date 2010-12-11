@@ -55,8 +55,11 @@ public:
     float fps() { return fps_; }
 
     void perspective_camera();
+    void orthogonal_camera();
     void endShot();
     void prevShot();
+
+    void fadeShots(int frames);
 
 
     void text(double x, double y, QString s);
@@ -81,7 +84,8 @@ protected:
     GLWidget* m_widget;
     int frameNumber;
 
-
+    int m_fadetimer;
+    int m_fade;
 
 
     //member variables

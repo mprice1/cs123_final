@@ -10,6 +10,7 @@ PolarAnimated2::PolarAnimated2(DrawEngine* parent,QHash<QString, QGLShaderProgra
     //m_increment = 0;
     //mFPS = 30;
     m_framecount = 0;
+    m_fadespan = 15;
     m_shapes = new QList<Shapes>();
     m_shapes_ring = new QList<Shapes>();
     m_ropes = new QList<rope>();
@@ -46,6 +47,12 @@ void PolarAnimated2::update(){
     if((int)m_framecount % 150 == 0)
     {
         m_engine->prevShot();
+    }
+
+    int frames = m_lifespan - m_fadespan;
+    if(m_framecount == frames)
+    {
+        m_engine->fadeShots(m_lifespan - frames);
     }
 }
 

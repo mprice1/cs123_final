@@ -10,9 +10,11 @@ PolarClusters::PolarClusters(DrawEngine* parent,QHash<QString, QGLShaderProgram 
 {
     //lasts 150 frames
     m_lifespan = 800;
+    //m_lifespan = 200;
     //m_increment = 0;
     //mFPS = 30;
     m_framecount = 0;
+    m_fadespan = 50;
 
     for(int i = 0; i < NUM_CLUSTERS; i++){
         QList<Shapes>* l = new QList<Shapes>();
@@ -46,6 +48,12 @@ void PolarClusters::update(){
     if(m_framecount>=m_lifespan)
     {
         m_engine->endShot();
+    }
+    int frames = m_lifespan - m_fadespan;
+
+    if(m_framecount == frames)
+    {
+        m_engine->fadeShots(m_lifespan - frames);
     }
 }
 
