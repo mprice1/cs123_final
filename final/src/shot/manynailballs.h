@@ -31,6 +31,7 @@ public:
 protected:
     nailcell* cells;
     int numCells;
+    int m_fadespan;
 };
 
 #endif // MANYNAILBALLS_H

@@ -18,6 +18,7 @@ struct nailcell
 
 manyNailBalls::manyNailBalls(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod):Shot(parent,shad,tex,mod)
 {
+    m_fadespan = 50;
     m_lifespan = 350;
     numCells = 25;
     //initialize cells
@@ -68,6 +69,13 @@ void manyNailBalls::update()
         if(m_framesElapsed>=m_lifespan)
         {
             m_engine->endShot();
+        }
+
+        int frames = m_lifespan - m_fadespan;
+
+        if(m_framesElapsed == frames)
+        {
+            m_engine->fadeShots(m_lifespan - frames);
         }
     }
 
