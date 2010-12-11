@@ -28,6 +28,8 @@
 #define SPRITE_ONE "sprite_one"
 #define SPRITE_TWO "sprite_two"
 
+#define PERLIN_TEXTURE "perlin"
+
 
 class QGLContext;
 class QGLShaderProgram;

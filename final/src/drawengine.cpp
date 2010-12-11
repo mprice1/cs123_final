@@ -104,9 +104,9 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
     frameNumber = 0;
     m_widget = widget;
 
-    m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
+   // m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
     //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
-   // m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
+    m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
     m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
     m_shots->append(  new nailSinField(this, &shader_programs_, &textures_, &models_));
@@ -268,6 +268,8 @@ void DrawEngine::load_textures() {
 
     textures_[SPRITE_ONE] = load_texture(new QFile("textures/sprt.png"));
     textures_[SPRITE_TWO] = load_texture(new QFile("textures/sprt2.png"));
+
+    textures_[PERLIN_TEXTURE] = load_texture(new QFile("textures/perl.jpeg"));
 
 }
 /**
