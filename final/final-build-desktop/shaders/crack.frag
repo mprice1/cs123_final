@@ -1,6 +1,7 @@
 uniform sampler2D colormap;
 uniform sampler2D normalmap;
 
+
 //attribute vec3 intan;
 varying float eyedist;
 varying vec3 lightoff;
@@ -15,7 +16,7 @@ void main()
 
 	vec3 mappednorm;
 	mappednorm.xyz = color_2.rgb;
-
+	
 	vec3 N = normalize((tan * mappednorm.x) + (bitan * mappednorm.y) + (normal*mappednorm.z));
 	
 	

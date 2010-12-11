@@ -68,6 +68,22 @@ void introNailShot::draw()
     //PANNING
     glTranslatef(-((float)m_framesElapsed)/50.0,0.0,0.0);
 
+   // glDisable(GL_LIGHTING);
+    //glActiveTexture(GL_TEXTURE1);
+/*    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    glBindTexture(GL_TEXTURE_2D,textures_->value(PERLIN_TEXTURE));
+    glBegin(GL_QUADS);
+    glTexCoord2f(0,0);
+    glVertex3f(0,0,0);
+    glTexCoord2f(1,0);
+    glVertex3f(1,0,0);
+    glTexCoord2f(1,1);
+    glVertex3f(1,0,1);
+    glTexCoord2f(0,1);
+    glVertex3f(0,0,1);
+    glEnd();*/
+
+
     //GROUND PLANE
     glPushMatrix();
     glTranslatef(0,-0.5,0.5);
@@ -79,6 +95,7 @@ void introNailShot::draw()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D,textures_->value(CRACK_NORM));
     shader_programs_->value(CRACK_SHADER)->setUniformValue("normalmap",1);
+
     shader_programs_->value(CRACK_SHADER)->bind();
     shader_programs_->value(CRACK_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
         //end of shader stuff
@@ -89,10 +106,12 @@ void introNailShot::draw()
     //************NAILS**************************
 
     //BIND NAIL SHADER
+    shader_programs_->value(NAIL_SHADER)->bind();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textures_->value("cube_map_1"));
-    shader_programs_->value(NAIL_SHADER)->bind();
-    shader_programs_->value(NAIL_SHADER)->setUniformValue("CubeMap",GL_TEXTURE0);
+
+    shader_programs_->value(NAIL_SHADER)->setUniformValue("CubeMap",0);
+
     shader_programs_->value(NAIL_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
 
     //FIRST NAIL
@@ -164,4 +183,9 @@ void introNailShot::draw()
     //DRAW ROPE
     drawRope(r1,true);
     drawRope(r2,true);
+    shader_programs_->value(ROPE_SHADER)->release();
+
+
+
+
 }

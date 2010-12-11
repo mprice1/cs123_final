@@ -68,7 +68,7 @@ void OrbShot::begin()
 
     glLightfv(GL_LIGHT0,GL_POSITION,lightpos);
 
-    m_engine->camera_.eye.z += 1;
+    m_engine->camera_.eye.z += 2;
 }
 
 

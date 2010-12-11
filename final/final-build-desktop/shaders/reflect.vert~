@@ -1,4 +1,5 @@
 uniform vec3 eyept;
+uniform sampler2D perlin;
 varying vec3 normal, lightDir, r;
 varying float eyedist;
 const vec3 L = vec3(0.,0.,1.);

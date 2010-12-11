@@ -7,7 +7,7 @@
 
 upRopeShot::upRopeShot(DrawEngine* parent,QHash<QString, QGLShaderProgram *>* shad, QHash<QString, GLuint>* tex, QHash<QString, Model>* mod) : Shot(parent,shad,tex,mod)
     {
-    m_lifespan = 1200;
+    m_lifespan = 1150;
     m_rope = makeRopeLine(Vector4(0,5,0,1), Vector4(0,-5,0,1),.05,100);
 
     r1 = new rope;

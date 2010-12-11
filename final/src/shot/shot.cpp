@@ -53,7 +53,7 @@ void Shot::drawSphere()
     shader_programs_->value(CRACK_SHADER)->bind();
 
     shader_programs_->value(CRACK_SHADER)->setUniformValue("eyept",m_engine->camera_.eye.x, m_engine->camera_.eye.y, m_engine->camera_.eye.z);
-
+    shader_programs_->value(CRACK_SHADER)->setUniformValue("sph",1);
     NMSphere * sph = m_engine->nm_sphere;
     glBegin(GL_TRIANGLES);
     for(int i=0; i<sph->numVerts; i++)
@@ -70,7 +70,7 @@ void Shot::drawSphere()
         glVertex3d(sph->verts[i].x,sph->verts[i].y,sph->verts[i].z);
     }
     glEnd();
-
+    shader_programs_->value(CRACK_SHADER)->setUniformValue("sph",0);
     shader_programs_->value(CRACK_SHADER)->release();
 
 }

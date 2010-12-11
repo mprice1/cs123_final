@@ -1,8 +1,8 @@
-attribute vec3 intan;
+//attribute vec3 intan;
 
 uniform sampler2D colormap;
 uniform sampler2D normalmap;
-
+uniform bool sph;
 uniform vec3 eyept;
 
 varying float eyedist;
@@ -15,11 +15,15 @@ varying vec3 bitan;
 void main()
 {
 	normal = normalize(gl_NormalMatrix * gl_Normal);
-	tan = normalize(gl_NormalMatrix * intan);
+	if(!sph)
+	{
+	tan = normalize(gl_NormalMatrix * vec3(0,0,1));
+	}
 	bitan = normalize(cross(tan,normal));
 
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 
 	gl_Position = ftransform();
-	lightoff = normalize(gl_LightSource[0].position - gl_ModelViewMatrix * gl_Vertex );
+	lightoff = normalize(gl_LightSource[0].position - gl_ModelViewMatrix * gl_Vertex);
+	eyedist = length(vec3(gl_ModelViewMatrix * gl_Vertex) - eyept);
 }

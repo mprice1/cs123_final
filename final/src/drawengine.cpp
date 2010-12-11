@@ -104,8 +104,7 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
     frameNumber = 0;
     m_widget = widget;
 
-   // m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
-    //m_shots->append(  new PolarShapes(this, &shader_programs_, &textures_, &models_));
+
     m_shots->append(  new introNailShot(this, &shader_programs_, &textures_, &models_));
     m_shots->append(new PolarClusters(this,  &shader_programs_, &textures_, &models_));
     m_shots->append(  new PolarAnimated(this, &shader_programs_, &textures_, &models_));
@@ -125,8 +124,7 @@ DrawEngine::DrawEngine(const QGLContext *context,int w,int h, GLWidget* widget) 
     m_shots->append(  new manyNailBalls(this, &shader_programs_, &textures_, &models_));
    //****************************
 
-
-
+    m_shots->append(  new particleOrbs(this, &shader_programs_, &textures_, &models_));
 
     m_shots->at(m_curShot)->begin();
     /****************************************/
@@ -173,57 +171,6 @@ void DrawEngine::load_models() {
     glmUnitize(models_[BRAD_MODEL].model);
     models_[BRAD_MODEL].idx = glmList(models_[BRAD_MODEL].model,GLM_SMOOTH);
 
-    /*
-    //Create grid
-    models_["grid"].idx = glGenLists(1);
-    glNewList(models_["grid"].idx,GL_COMPILE);
-    float r = 1.f,dim = 10,delta = r * 2 / dim;
-    for(int y = 0; y < dim; ++y) {
-        glBegin(GL_QUAD_STRIP);
-        for(int x = 0; x <= dim; ++x) {
-            glVertex2f(x * delta - r,y * delta - r);
-            glVertex2f(x * delta - r,(y + 1) * delta - r);
-        }
-        glEnd();
-    }
-    glEndList();
-    cout << "\t \033[32mgrid compiled\033[0m" << endl;
-    models_["skybox"].idx = glGenLists(1);
-    glNewList(models_["skybox"].idx,GL_COMPILE);
-    */
-
-    /*
-    //Be glad we wrote this for you...ugh.
-    glBegin(GL_QUADS);
-    float fExtent = 50.f;
-    glTexCoord3f(1.0f,-1.0f,-1.0f); glVertex3f(fExtent,-fExtent,-fExtent);
-    glTexCoord3f(-1.0f,-1.0f,-1.0f);glVertex3f(-fExtent,-fExtent,-fExtent);
-    glTexCoord3f(-1.0f,1.0f,-1.0f);glVertex3f(-fExtent,fExtent,-fExtent);
-    glTexCoord3f(1.0f,1.0f,-1.0f); glVertex3f(fExtent,fExtent,-fExtent);
-    glTexCoord3f(1.0f,-1.0f,1.0f);glVertex3f(fExtent,-fExtent,fExtent);
-    glTexCoord3f(1.0f,-1.0f,-1.0f); glVertex3f(fExtent,-fExtent,-fExtent);
-    glTexCoord3f(1.0f,1.0f,-1.0f);  glVertex3f(fExtent,fExtent,-fExtent);
-    glTexCoord3f(1.0f,1.0f,1.0f); glVertex3f(fExtent,fExtent,fExtent);
-    glTexCoord3f(-1.0f,-1.0f,1.0f);  glVertex3f(-fExtent,-fExtent,fExtent);
-    glTexCoord3f(1.0f,-1.0f,1.0f); glVertex3f(fExtent,-fExtent,fExtent);
-    glTexCoord3f(1.0f,1.0f,1.0f);  glVertex3f(fExtent,fExtent,fExtent);
-    glTexCoord3f(-1.0f,1.0f,1.0f); glVertex3f(-fExtent,fExtent,fExtent);
-    glTexCoord3f(-1.0f,-1.0f,-1.0f); glVertex3f(-fExtent,-fExtent,-fExtent);
-    glTexCoord3f(-1.0f,-1.0f,1.0f);glVertex3f(-fExtent,-fExtent,fExtent);
-    glTexCoord3f(-1.0f,1.0f,1.0f); glVertex3f(-fExtent,fExtent,fExtent);
-    glTexCoord3f(-1.0f,1.0f,-1.0f);glVertex3f(-fExtent,fExtent,-fExtent);
-    glTexCoord3f(-1.0f,1.0f,-1.0f);glVertex3f(-fExtent,fExtent,-fExtent);
-    glTexCoord3f(-1.0f,1.0f,1.0f);glVertex3f(-fExtent,fExtent,fExtent);
-    glTexCoord3f(1.0f,1.0f,1.0f);glVertex3f(fExtent,fExtent,fExtent);
-    glTexCoord3f(1.0f,1.0f,-1.0f);glVertex3f(fExtent,fExtent,-fExtent);
-    glTexCoord3f(-1.0f,-1.0f,-1.0f);glVertex3f(-fExtent,-fExtent,-fExtent);
-    glTexCoord3f(-1.0f,-1.0f,1.0f);glVertex3f(-fExtent,-fExtent,fExtent);
-    glTexCoord3f(1.0f,-1.0f,1.0f); glVertex3f(fExtent,-fExtent,fExtent);
-    glTexCoord3f(1.0f,-1.0f,-1.0f);glVertex3f(fExtent,-fExtent,-fExtent);
-    glEnd();
-    glEndList();
-    cout << "\t \033[32mskybox compiled\033[0m" << endl;
-    */
 }
 /**
   @paragraph Loads shaders used by the program.  Caleed by the ctor once upon
@@ -244,6 +191,11 @@ void DrawEngine::load_shaders() {
    shader_programs_[CRACK_SHADER]->addShaderFromSourceFile(QGLShader::Vertex,"shaders/crack.vert");
    shader_programs_[CRACK_SHADER]->addShaderFromSourceFile(QGLShader::Fragment,"shaders/crack.frag");
   shader_programs_[CRACK_SHADER]->link();
+
+  shader_programs_[SPRITE_SHADER] = new QGLShaderProgram(context_);
+  shader_programs_[SPRITE_SHADER]->addShaderFromSourceFile(QGLShader::Vertex,"shaders/sprite.vert");
+  shader_programs_[SPRITE_SHADER]->addShaderFromSourceFile(QGLShader::Fragment,"shaders/sprite.frag");
+ shader_programs_[SPRITE_SHADER]->link();
 }
 /**
   @paragraph Loads textures used by the program.  Called by the ctor once upon

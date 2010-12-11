@@ -30,6 +30,8 @@
 
 #define PERLIN_TEXTURE "perlin"
 
+#define SPRITE_SHADER "spriteshade"
+
 
 class QGLContext;
 class QGLShaderProgram;
